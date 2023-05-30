@@ -28,7 +28,7 @@ public class login_screen extends Application implements Initializable {
 
     //<editor-fold desc="Variables>
     /**
-     * FXML variables
+     * Variable declarations.
      */
     @FXML
     private Button login_button;

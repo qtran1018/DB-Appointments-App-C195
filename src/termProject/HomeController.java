@@ -11,7 +11,9 @@ import javax.swing.*;
 import java.io.IOException;
 
 public class HomeController {
-
+    /**
+     * Variable declarations.
+     */
     @FXML
     private Button btnHome;
 

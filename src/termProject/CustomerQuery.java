@@ -20,6 +20,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CustomerQuery {
+    /**
+     * Variable declarations.
+     */
     @FXML
     private Button btnHome;
     @FXML

@@ -21,6 +21,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AppointmentQuery {
+    /**
+     * Variable declarations.
+     */
     @FXML
     private Button btnHome;
     @FXML
