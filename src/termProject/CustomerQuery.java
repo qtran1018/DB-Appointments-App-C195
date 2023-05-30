@@ -32,6 +32,7 @@ public class CustomerQuery {
     /**
      * SQL statement methods.
      */
+    //TODO: Add in the rest of the fields. Required so the getData for TableView doesn't die trying to get null values.
     public static int customerInsert(String customerName, String customerAddress, String customerPostal, String customerPhone, int divisionID) throws SQLException {
         String sql = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Division_ID) VALUES(?, ?, ?, ?, ?)";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
