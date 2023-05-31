@@ -14,6 +14,7 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javax.swing.*;
+import javax.xml.transform.Result;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,20 +28,25 @@ public class CustomerQuery {
     private Button btnHome;
     @FXML
     private TableView customersTable;
+    @FXML
+    private Button btnCustomerAdd;
     private ObservableList<ObservableList> data;
 
     /**
      * SQL statement methods.
      */
-    //TODO: Add in the rest of the fields. Required so the getData for TableView doesn't die trying to get null values.
-    public static int customerInsert(String customerName, String customerAddress, String customerPostal, String customerPhone, int divisionID) throws SQLException {
-        String sql = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Division_ID) VALUES(?, ?, ?, ?, ?)";
+    public static int customerInsert(String customerName, String customerAddress, String customerPostal, String customerPhone, String createDate, String createdBy, String lastUpdate, String lastUpdatedBy, int divisionID) throws SQLException {
+        String sql = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By, Last_Update, Last_Updated_By, Division_ID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setString(1,customerName);
         ps.setString(2,customerAddress);
         ps.setString(3,customerPostal);
         ps.setString(4,customerPhone);
-        ps.setInt(5,divisionID);
+        ps.setString(5,createDate);
+        ps.setString(6, createdBy);
+        ps.setString(7, lastUpdate);
+        ps.setString(8,lastUpdatedBy);
+        ps.setInt(9, divisionID);
         return ps.executeUpdate();
         //int rowsAffected = ps.executeUpdate(); Redundant, converted to inline return.
         //return rowsAffected;
@@ -91,6 +97,18 @@ public class CustomerQuery {
          */
     }
 
+    public static int selectDivisionID(String state) throws SQLException {
+        String sql = "SELECT Division_ID FROM first_level_divisions WHERE Division = ?";
+        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+        ps.setString(1,state);
+        ResultSet rs = ps.executeQuery();
+        int divisionID = -1;
+        while(rs.next()){
+            divisionID = rs.getInt("Division_ID");
+        }
+        return divisionID;
+    }
+
     /**
      * FXML action methods.
      */
@@ -119,6 +137,13 @@ public class CustomerQuery {
     }
     public void appointmentsClick() throws IOException {
         loadScreen("appointments_screen.fxml");
+    }
+    public void customerAddClick() throws IOException {
+        FXMLLoader partLoader = new FXMLLoader(getClass().getResource("customer_add.fxml"));
+        Parent partRoot = partLoader.load();
+        Stage partStage = new Stage();
+        partStage.setScene(new Scene(partRoot));
+        partStage.show();
     }
 
     /**
@@ -153,6 +178,9 @@ public class CustomerQuery {
             e.printStackTrace();
             System.out.println("Error getting data in AppointmentQuery");
         }
+    }
+    public void refreshTable(){
+        customersTable.refresh();
     }
     public void initialize() {
         getData();

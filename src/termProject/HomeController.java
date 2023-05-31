@@ -34,6 +34,7 @@ public class HomeController {
         int resultBtn = JOptionPane.showConfirmDialog(null, "Are you sure you want to log out?", "Warning", confirmBtn);
 
         if (resultBtn == JOptionPane.YES_OPTION) {
+            login_screen.unsetUsername();
             loadScreen("login_screen.fxml");
         }
     }

@@ -44,6 +44,7 @@ public class login_screen extends Application implements Initializable {
     Locale currentLocale = Locale.getDefault();
     String myCountry = currentLocale.getCountry();
     String myLanguage = currentLocale.getDisplayLanguage();
+    static String loggedUser;
 
     //</editor-fold
 
@@ -83,12 +84,22 @@ public class login_screen extends Application implements Initializable {
         }
         return false;
     }
+    public static String getUsername(){
+        return loggedUser;
+    }
+    public void setUserName(String userName){
+        loggedUser = userName;
+    }
+    public static void unsetUsername(){
+        loggedUser = "";
+    }
     public void loginClick() {
         try {
             String username = username_field.getText();
             String password = password_field.getText();
 
             if (loginCheck(username, password)) {
+                setUserName(username);
                 //Future improvement: use the loadScreen method.
                 FXMLLoader screenLoader = new FXMLLoader(getClass().getResource("home_screen.fxml"));
                 Parent screenRoot = screenLoader.load();
