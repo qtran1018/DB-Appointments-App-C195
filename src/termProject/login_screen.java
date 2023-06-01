@@ -91,6 +91,7 @@ public class login_screen extends Application implements Initializable {
         loggedUser = userName;
     }
     public static void unsetUsername(){
+        //TODO: Maybe this will cause a problem, check back later.
         loggedUser = null;
     }
     public void loginClick() {

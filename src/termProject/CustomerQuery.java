@@ -152,6 +152,9 @@ public class CustomerQuery {
     public void getData() {
         try {
             data = FXCollections.observableArrayList();
+            data.clear();
+            customersTable.getItems().clear();
+            customersTable.getColumns().clear();
             ResultSet rs = CustomerQuery.select();
 
             for (int i = 0; i < rs.getMetaData().getColumnCount(); i++){
@@ -179,8 +182,11 @@ public class CustomerQuery {
             System.out.println("Error getting data in AppointmentQuery");
         }
     }
+
     public void refreshTable(){
-        customersTable.refresh();
+        System.out.println("before refresh");
+        getData();
+        System.out.println("after refresh");
     }
     public void initialize() {
         getData();
