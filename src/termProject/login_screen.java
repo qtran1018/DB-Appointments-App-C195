@@ -81,10 +81,7 @@ public class login_screen extends Application implements Initializable {
         ps.setString(2,password);
         ResultSet rs = ps.executeQuery();
 
-        if(rs.isBeforeFirst()) {
-            return true;
-        }
-        return false;
+        return rs.isBeforeFirst();
     }
     public static String getUsername(){
         return loggedUser;
@@ -120,7 +117,6 @@ public class login_screen extends Application implements Initializable {
         }
         catch (Exception e) {
             showMessageDialog(null,"Something went wrong. Contact your system administrator.\n" + "Error:" + e);
-            System.out.println(e);
         }
     }
     public void setStuff() {
@@ -134,9 +130,6 @@ public class login_screen extends Application implements Initializable {
     }
 
     public static void main(String[] args) {
-        /**
-         * Connects to DB on app launch. If using the X button instead of the Quit button, still closes the DB connection.
-         */
         JDBC.openConnection();
         launch(args);
         JDBC.closeConnection();

@@ -34,7 +34,6 @@ public class AppointmentQuery {
     private Button btnHome;
     @FXML
     private TableView appointmentsTable;
-    private ObservableList<ObservableList> data;
 
     /**
      * SQL statement methods.
@@ -66,8 +65,7 @@ public class AppointmentQuery {
     public static ResultSet select() throws SQLException {
         String sql = "SELECT * FROM appointments";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery();
-        return rs;
+        return ps.executeQuery();
     }
 
     /**
@@ -105,7 +103,7 @@ public class AppointmentQuery {
      */
     public void getData() {
         try {
-            data = FXCollections.observableArrayList();
+            ObservableList<ObservableList> data = FXCollections.observableArrayList();
             ResultSet rs = AppointmentQuery.select();
 
             for (int i = 0; i < rs.getMetaData().getColumnCount(); i++){
