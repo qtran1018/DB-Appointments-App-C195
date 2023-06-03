@@ -1,23 +1,23 @@
 package termProject;
 
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.beans.value.ChangeListener;
-import static javax.swing.JOptionPane.showMessageDialog;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+
+import static javax.swing.JOptionPane.showMessageDialog;
 
 public class addCustomerController {
 
@@ -35,8 +35,6 @@ public class addCustomerController {
     private ComboBox<String> customerStateField;
     @FXML
     private TextField customerPhoneField;
-    @FXML
-    private Button saveCustomer;
     @FXML
     private Button btnCancel;
 
@@ -124,7 +122,7 @@ public class addCustomerController {
 
         //TODO: somehow refresh the table.
         FXMLLoader customerLoader = new FXMLLoader(getClass().getResource("customers_screen.fxml"));
-        Parent root = customerLoader.load();
+        customerLoader.load();
         CustomerQuery controller = customerLoader.getController();
         controller.refreshTable();
 
@@ -136,19 +134,14 @@ public class addCustomerController {
         customerIDField.setDisable(true);
         customerCountryField.getItems().clear();
         customerCountryField.setItems(countries);
-        customerCountryField.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                switch (t1.toString()){
-                    case "U.S":
-                        customerStateField.setItems(usStates);
-                        break;
-                    case "UK":
-                        customerStateField.setItems(ukStates);
-                        break;
-                    case "Canada":
-                        customerStateField.setItems(caStates);
-                }
+        //Lambda?
+        customerCountryField.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            //Learned about Enhanced Switch. Arrow-case, no need for break.
+            switch (t1){
+                case "U.S" -> customerStateField.setItems(usStates);
+                case "UK" -> customerStateField.setItems(ukStates);
+                case "Canada" -> customerStateField.setItems(caStates);
+                default -> throw new IllegalStateException("Invalid value.");
             }
         });
 
