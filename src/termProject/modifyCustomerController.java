@@ -1,7 +1,5 @@
 package termProject;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,14 +8,15 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class modifyCustomerController {
 
+    public Button saveCustomer;
     @FXML
     private TextField customerIDField;
     @FXML
