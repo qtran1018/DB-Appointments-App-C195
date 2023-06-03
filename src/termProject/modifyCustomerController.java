@@ -33,17 +33,8 @@ public class modifyCustomerController {
     @FXML
     private TextField customerPhoneField;
     @FXML
-    private Button saveCustomer;
-    @FXML
     private Button btnCancel;
     public String[] selectedArr;
-    private String customerID;
-    private String customerName;
-    private String customerAddress;;
-    private String customerPostal;
-    private String customerCountry;
-    private String customerState;
-    private String customerPhone;
 
     //<editor-fold desc="Country State lists>
     final ObservableList<String> countries = FXCollections.observableArrayList("U.S", "UK", "Canada");
@@ -110,7 +101,7 @@ public class modifyCustomerController {
     }
 
     @FXML
-    public void customerSave() throws SQLException, IOException {
+    public void customerSave() throws SQLException {
         int customerID = Integer.parseInt(customerIDField.getText());
         String customerName = customerNameField.getText();
         String customerAddress = customerAddressField.getText();
@@ -125,9 +116,6 @@ public class modifyCustomerController {
         CustomerQuery.customerUpdate(customerName,customerAddress, customerPostal, customerPhone, customerLastUpdate, customerLastUpdatedBy, customerDivisionID, customerID);
         showMessageDialog(null,"Customer information updated.");
 
-        /**
-         * Closes the modify window.
-         */
         Stage closeModify = (Stage) btnCancel.getScene().getWindow();
         closeModify.close();
     }
@@ -135,18 +123,18 @@ public class modifyCustomerController {
     public void initCustomerData(String[] selectedArr) throws SQLException {
         this.selectedArr = selectedArr;
 
-        customerID = selectedArr[0];
-        customerName = selectedArr[1];
-        customerAddress = selectedArr[2];
-        customerPostal = selectedArr[3];
-        customerState = selectedArr[9];
-        customerPhone = selectedArr[4];
+        String customerID = selectedArr[0];
+        String customerName = selectedArr[1];
+        String customerAddress = selectedArr[2];
+        String customerPostal = selectedArr[3];
+        String customerState = selectedArr[9];
+        String customerPhone = selectedArr[4];
 
         //State goes: String Array --> String (number) --> Int --> query String to Division name.
         //Example: ["1"] --> "1" --> 1 --> "Alabama"
         int divisionID = Integer.parseInt(customerState);
         customerState = CustomerQuery.selectDivision(divisionID);
-        customerCountry = CustomerQuery.selectCountry(customerState);
+        String customerCountry = CustomerQuery.selectCountry(customerState);
 
         customerIDField.setText(customerID);
         customerNameField.setText(customerName);
@@ -162,19 +150,13 @@ public class modifyCustomerController {
         customerIDField.setDisable(true);
         customerCountryField.getItems().clear();
         customerCountryField.setItems(countries);
-        customerCountryField.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                switch (t1.toString()){
-                    case "U.S":
-                        customerStateField.setItems(usStates);
-                        break;
-                    case "UK":
-                        customerStateField.setItems(ukStates);
-                        break;
-                    case "Canada":
-                        customerStateField.setItems(caStates);
-                }
+        //Lambda?
+        customerCountryField.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            switch (t1){
+                case "U.S" -> customerStateField.setItems(usStates);
+                case "UK" -> customerStateField.setItems(ukStates);
+                case "Canada" -> customerStateField.setItems(caStates);
+                default -> throw new IllegalStateException("Invalid value.");
             }
         });
 

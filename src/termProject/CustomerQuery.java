@@ -14,13 +14,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+
 import javax.swing.*;
-import javax.xml.transform.Result;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class CustomerQuery {
@@ -30,6 +31,7 @@ public class CustomerQuery {
     public Button btnLogout;
     public Button btnCustomerDelete;
     public Button btnCustomerModify;
+    public Label labelNav;
     /**
      * Variable declarations.
      */
@@ -42,7 +44,6 @@ public class CustomerQuery {
     public Button btnCustomerAdd;
     @FXML
     public Button btnCustomers;
-    private ObservableList<ObservableList> data;
     Object selectedItem;
     String[] selectedArr;
 
@@ -100,8 +101,7 @@ public class CustomerQuery {
     public static ResultSet select() throws SQLException {
         String sql = "SELECT * FROM customers";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery();
-        return rs;
+        return ps.executeQuery();
         /*
         while(rs.next()){
             int contactID = rs.getInt("Contact_ID");
@@ -138,10 +138,7 @@ public class CustomerQuery {
     }
 
     public static String selectCountry(String state) throws SQLException {
-        String sql = "SELECT Country FROM\n" +
-                "first_level_divisions as f INNER JOIN countries as c\n" +
-                "ON f.Country_ID = c.Country_ID\n" +
-                "WHERE Division = ?";
+        String sql = "SELECT Country FROM first_level_divisions as f INNER JOIN countries as c ON f.Country_ID = c.Country_ID WHERE Division = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setString(1,state);
         ResultSet rs = ps.executeQuery();
@@ -243,10 +240,6 @@ public class CustomerQuery {
                     showMessageDialog(null, "Select a row to delete.");
                 }
             }
-            else {
-                //Comment for if-else visibility.
-                //Does nothing but close on a "No" press.
-            }
         }
         catch (Exception e) {
             showMessageDialog(null, "Select a row to delete.");
@@ -258,7 +251,7 @@ public class CustomerQuery {
          */
     public void getData() {
         try {
-            data = FXCollections.observableArrayList();
+            ObservableList<ObservableList> data = FXCollections.observableArrayList();
             data.clear();
             customersTable.getItems().clear();
             customersTable.getColumns().clear();
