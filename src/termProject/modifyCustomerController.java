@@ -1,25 +1,22 @@
 package termProject;
 
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.beans.value.ChangeListener;
-import static javax.swing.JOptionPane.showMessageDialog;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import static javax.swing.JOptionPane.showMessageDialog;
 
-public class addCustomerController {
+public class modifyCustomerController {
 
     @FXML
     private TextField customerIDField;
@@ -39,6 +36,14 @@ public class addCustomerController {
     private Button saveCustomer;
     @FXML
     private Button btnCancel;
+    public String[] selectedArr;
+    private String customerID;
+    private String customerName;
+    private String customerAddress;;
+    private String customerPostal;
+    private String customerCountry;
+    private String customerState;
+    private String customerPhone;
 
     //<editor-fold desc="Country State lists>
     final ObservableList<String> countries = FXCollections.observableArrayList("U.S", "UK", "Canada");
@@ -96,40 +101,61 @@ public class addCustomerController {
     final ObservableList<String> ukStates = FXCollections.observableArrayList("England", "Scotland", "Wales", "Northern Ireland");
     final ObservableList<String> caStates = FXCollections.observableArrayList("Northwestern Territories","Alberta","British Columbia","Manitoba","New Brunswick","Nova Scotia","Prince Edward Island","Ontario","Québec","Saskatchewan","Nunavut","Yukon","Newfoundland and Labrador");
     //</editor-fold
+
     @FXML
     public void customerCancel() {
         Stage customerAddStage = (Stage) btnCancel.getScene().getWindow();
         //Closes current window
         customerAddStage.close();
     }
+
     @FXML
     public void customerSave() throws SQLException, IOException {
+        int customerID = Integer.parseInt(customerIDField.getText());
         String customerName = customerNameField.getText();
         String customerAddress = customerAddressField.getText();
         String customerPostal = customerPostalField.getText();
-        //TODO: set it when I make the combo boxes.
-        //String customerCountry = customerCountryField.getValue();
         String customerState = customerStateField.getValue();
         int customerDivisionID = CustomerQuery.selectDivisionID(customerState);
         String customerPhone = customerPhoneField.getText();
         //Formats in UTC time like this : 2023-05-31 06:52:35
-        String customerCreateDate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString().replaceAll("[TZ]"," ");
-        //String customerLastUpdate = customerCreateDate;
-        String customerCreatedBy = login_screen.getUsername();
-        //String customerLastUpdatedBy = login_screen.getUsername();
+        String customerLastUpdate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString().replaceAll("[TZ]"," ");
+        String customerLastUpdatedBy = login_screen.getUsername();
 
-        //Doubles up on create-date and update-date, created-by and updated-by, since they will be the same.
-        CustomerQuery.customerInsert(customerName, customerAddress, customerPostal, customerPhone, customerCreateDate, customerCreatedBy, customerCreateDate, customerCreatedBy, customerDivisionID);
-        showMessageDialog(null,"Customer added.");
+        CustomerQuery.customerUpdate(customerName,customerAddress, customerPostal, customerPhone, customerLastUpdate, customerLastUpdatedBy, customerDivisionID, customerID);
+        showMessageDialog(null,"Customer information updated.");
 
-        //TODO: somehow refresh the table.
-        FXMLLoader customerLoader = new FXMLLoader(getClass().getResource("customers_screen.fxml"));
-        Parent root = customerLoader.load();
-        CustomerQuery controller = customerLoader.getController();
-        controller.refreshTable();
+        /**
+         * Closes the modify window.
+         */
+        Stage closeModify = (Stage) btnCancel.getScene().getWindow();
+        closeModify.close();
+    }
 
-        Stage addCustomer = (Stage) btnCancel.getScene().getWindow();
-        addCustomer.close();
+    public void initCustomerData(String[] selectedArr) throws SQLException {
+        this.selectedArr = selectedArr;
+
+        customerID = selectedArr[0];
+        customerName = selectedArr[1];
+        customerAddress = selectedArr[2];
+        customerPostal = selectedArr[3];
+        customerState = selectedArr[9];
+        customerPhone = selectedArr[4];
+
+        //State goes: String Array --> String (number) --> Int --> query String to Division name.
+        //Example: ["1"] --> "1" --> 1 --> "Alabama"
+        int divisionID = Integer.parseInt(customerState);
+        customerState = CustomerQuery.selectDivision(divisionID);
+        customerCountry = CustomerQuery.selectCountry(customerState);
+
+        customerIDField.setText(customerID);
+        customerNameField.setText(customerName);
+        customerAddressField.setText(customerAddress);
+        customerPostalField.setText(customerPostal);
+        customerStateField.setValue(customerState);
+        customerPhoneField.setText(customerPhone);
+        customerCountryField.setValue(customerCountry);
+
     }
     @FXML
     void initialize() {

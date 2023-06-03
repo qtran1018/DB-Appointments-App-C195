@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
@@ -19,18 +20,31 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 public class CustomerQuery {
+    public Button btnAppointments;
+    public Label labelTables;
+    public Label labelCurrentPlace;
+    public Button btnLogout;
+    public Button btnCustomerDelete;
+    public Button btnCustomerModify;
     /**
      * Variable declarations.
      */
     @FXML
     private Button btnHome;
     @FXML
-    private TableView customersTable;
+    //Changed from nothing to <ObservableList>
+    private TableView<ObservableList> customersTable;
     @FXML
-    private Button btnCustomerAdd;
+    public Button btnCustomerAdd;
+    @FXML
+    public Button btnCustomers;
     private ObservableList<ObservableList> data;
+    Object selectedItem;
+    String[] selectedArr;
 
     /**
      * SQL statement methods.
@@ -52,14 +66,17 @@ public class CustomerQuery {
         //return rowsAffected;
     }
 
-    public static int customerUpdate(int customerID, String customerName, String customerAddress, String customerPostal, String customerPhone) throws SQLException {
-        String sql = "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ? WHERE Customer_ID = ?";
+    public static int customerUpdate(String customerName, String customerAddress, String customerPostal, String customerPhone, String lastUpdate, String lastUpdatedBy, int divisionID, int customerID) throws SQLException {
+        String sql = "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Last_Update = ?, Last_Updated_By = ?, Division_ID = ? WHERE Customer_ID = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setString(1, customerName);
         ps.setString(2, customerAddress);
         ps.setString(3, customerPostal);
         ps.setString(4, customerPhone);
-        ps.setInt(5, customerID);
+        ps.setString(5, lastUpdate);
+        ps.setString(6, lastUpdatedBy);
+        ps.setInt(7,divisionID);
+        ps.setInt(8,customerID);
         return ps.executeUpdate();
     }
 
@@ -108,6 +125,32 @@ public class CustomerQuery {
         }
         return divisionID;
     }
+    public static String selectDivision(int division_id) throws SQLException {
+        String sql = "SELECT Division FROM first_level_divisions WHERE Division_ID = ?";
+        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+        ps.setInt(1,division_id);
+        ResultSet rs = ps.executeQuery();
+        String division = "Division not found.";
+        while(rs.next()){
+            division = rs.getString("Division");
+        }
+        return division;
+    }
+
+    public static String selectCountry(String state) throws SQLException {
+        String sql = "SELECT Country FROM\n" +
+                "first_level_divisions as f INNER JOIN countries as c\n" +
+                "ON f.Country_ID = c.Country_ID\n" +
+                "WHERE Division = ?";
+        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+        ps.setString(1,state);
+        ResultSet rs = ps.executeQuery();
+        String country = "State not found.";
+        while(rs.next()){
+            country = rs.getString("Country");
+        }
+        return country;
+    }
 
     /**
      * FXML action methods.
@@ -145,10 +188,74 @@ public class CustomerQuery {
         partStage.setScene(new Scene(partRoot));
         partStage.show();
     }
+    public void customerModifyClick() {
+        try {
+            selectedItem = customersTable.getSelectionModel().getSelectedItem();
+            if (selectedItem != null){
+                String selectedString = selectedItem.toString();
+                selectedString = selectedString.substring(1,selectedString.length()-1);
+                selectedArr = selectedString.split(",");
+                //Lambda?
+                selectedArr = Arrays.stream(selectedArr).map(String::trim).toArray(String[]::new);
+
+                FXMLLoader customerLoader = new FXMLLoader(getClass().getResource("customer_modify.fxml"));
+                Parent customerRoot = customerLoader.load();
+                Stage customerModifyStage = new Stage();
+                customerModifyStage.setScene(new Scene(customerRoot));
+
+                modifyCustomerController modControl = customerLoader.getController();
+                modControl.initCustomerData(selectedArr);
+
+                customerModifyStage.show();
+            }
+            else {
+                showMessageDialog(null, "Select a row to modify.");
+            }
+        }
+        catch (Exception e) {
+            showMessageDialog(null, "Select a row to modify.");
+        }
+
+    }
+    public void customerDeleteClick() {
+        try {
+            int confirmBtn = JOptionPane.YES_NO_OPTION;
+            int resultBtn = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this customer?", "Warning", confirmBtn);
+
+            if (resultBtn == JOptionPane.YES_OPTION) {
+                selectedItem = customersTable.getSelectionModel().getSelectedItem();
+                if (selectedItem != null) {
+                    String selectedString = selectedItem.toString();
+                    selectedString = selectedString.substring(1, selectedString.length() - 1);
+                    selectedArr = selectedString.split(",");
+                    //Lambda?
+                    selectedArr = Arrays.stream(selectedArr).map(String::trim).toArray(String[]::new);
+                    String cusID = selectedArr[0];
+                    int customerID = Integer.parseInt(cusID);
+
+                    CustomerQuery.customerDelete(customerID);
+                    btnCustomers.fire();
+
+                    //TODO future: actually check if it was deleted. Select on customers to see if customerID exists. Write an error message if it's still there.
+                    showMessageDialog(null,"Customer deleted.");
+                }
+                else {
+                    showMessageDialog(null, "Select a row to delete.");
+                }
+            }
+            else {
+                //Comment for if-else visibility.
+                //Does nothing but close on a "No" press.
+            }
+        }
+        catch (Exception e) {
+            showMessageDialog(null, "Select a row to delete.");
+        }
+    }
 
     /**
-     * Table setting code.
-     */
+         * Table setting code.
+         */
     public void getData() {
         try {
             data = FXCollections.observableArrayList();
