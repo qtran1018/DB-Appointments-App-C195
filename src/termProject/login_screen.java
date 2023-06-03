@@ -25,6 +25,8 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 
 public class login_screen extends Application implements Initializable {
+    public Button forgot_button;
+    public Button exitBtn;
 
     //<editor-fold desc="Variables>
     /**

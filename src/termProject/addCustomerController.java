@@ -18,6 +18,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 public class addCustomerController {
 
+    public Button saveCustomer;
     @FXML
     private TextField customerIDField;
     @FXML

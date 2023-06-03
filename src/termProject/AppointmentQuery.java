@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -21,6 +22,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AppointmentQuery {
+    public Label labelNav;
+    public Label labelTables;
+    public Button btnCustomers;
+    public Button btnAppointments;
+    public Button btnLogout;
     /**
      * Variable declarations.
      */
