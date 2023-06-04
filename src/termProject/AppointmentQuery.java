@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+
+import static javax.swing.JOptionPane.showMessageDialog;
 
 public class AppointmentQuery {
     public Label labelNav;
@@ -34,24 +37,46 @@ public class AppointmentQuery {
     private Button btnHome;
     @FXML
     private TableView appointmentsTable;
+    String[] selectedArr;
+    Object selectedItem;
 
     /**
      * SQL statement methods.
      */
-    public static int appointmentInsert(String title, int customerID, int userID, int contactID) throws SQLException {
-        String sql = "INSERT INTO appointments (Title, Customer_ID, User_ID, Contact_ID) VALUES (?, ?, ?, ?)";
+    public static int appointmentInsert(String title, String description, String location, String type, String start, String end, String createDate, String createdBy, String lastUpdate, String lastUpdatedBy, int customerID, int userID, int contactID) throws SQLException {
+        String sql = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setString(1, title);
-        ps.setInt(2, customerID);
-        ps.setInt(3, userID);
-        ps.setInt(4, contactID);
+        ps.setString(2, description);
+        ps.setString(3, location);
+        ps.setString(4, type);
+        ps.setString(5, start);
+        ps.setString(6, end);
+        ps.setString(7, createDate);
+        ps.setString(8, createdBy);
+        ps.setString(9, lastUpdate);
+        ps.setString(10, lastUpdatedBy);
+        ps.setInt(11, customerID);
+        ps.setInt(12, userID);
+        ps.setInt(13, contactID);
         return ps.executeUpdate();
     }
 
-    public static int appointmentUpdate(int customerID, String customerName, String customerAddress, String customerPostal, String customerPhone) throws SQLException {
-        String sql = "";
+    public static int appointmentUpdate(String title, String description, String location, String type, String start, String end, String lastUpdate, String lastUpdatedBy, int customerID, int userID, int contactID, int appointmentID) throws SQLException {
+        String sql = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, Last_Update = ?, Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ? WHERE Appointment_ID = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
-        //ps.setXXX all of them here
+        ps.setString(1, title);
+        ps.setString(2, description);
+        ps.setString(3, location);
+        ps.setString(4, type);
+        ps.setString(5, start);
+        ps.setString(6, end);
+        ps.setString(7, lastUpdate);
+        ps.setString(8, lastUpdatedBy);
+        ps.setInt(9, customerID);
+        ps.setInt(10, userID);
+        ps.setInt(11, contactID);
+        ps.setInt(12, appointmentID);
         return ps.executeUpdate();
     }
 
@@ -97,6 +122,38 @@ public class AppointmentQuery {
     public void customersClick() throws IOException {
         loadScreen("customers_screen.fxml");
     }
+    public void appointmentDeleteClick() {
+        try {
+            int confirmBtn = JOptionPane.YES_NO_OPTION;
+            int resultBtn = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this appointment?", "Warning", confirmBtn);
+
+            if (resultBtn == JOptionPane.YES_OPTION) {
+                selectedItem = appointmentsTable.getSelectionModel().getSelectedItem();
+                if (selectedItem != null) {
+                    String selectedString = selectedItem.toString();
+                    selectedString = selectedString.substring(1, selectedString.length() - 1);
+                    selectedArr = selectedString.split(",");
+                    //Lambda?
+                    selectedArr = Arrays.stream(selectedArr).map(String::trim).toArray(String[]::new);
+                    String appID = selectedArr[0];
+                    int appointmentID = Integer.parseInt(appID);
+
+                    AppointmentQuery.appointmentDelete(appointmentID);
+                    //TODO: change this to a refresh button or something
+                    btnCustomers.fire();
+
+                    //TODO future: actually check if it was deleted. Select on customers to see if appointmentID exists. Write an error message if it's still there.
+                    showMessageDialog(null,"Customer deleted.");
+                }
+                else {
+                    showMessageDialog(null, "Select an appointment to delete.");
+                }
+            }
+        }
+        catch (Exception e) {
+            showMessageDialog(null, "Select an appointment to delete.");
+        }
+    }
 
     /**
      * Table setting code.
@@ -129,6 +186,7 @@ public class AppointmentQuery {
         catch (Exception e){
             e.printStackTrace();
             System.out.println("Error getting data in AppointmentQuery");
+            System.out.println(e);
         }
     }
     public void initialize() {
