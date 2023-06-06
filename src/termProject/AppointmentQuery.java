@@ -15,6 +15,7 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+
 import javax.swing.*;
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -30,6 +31,10 @@ public class AppointmentQuery {
     public Button btnCustomers;
     public Button btnAppointments;
     public Button btnLogout;
+    public Button btnAppointmentAdd;
+    public Button btnAppointmentsModify;
+    public Button btnAppointmentDelete;
+    public Button btnRefresh;
     /**
      * Variable declarations.
      */
@@ -92,10 +97,88 @@ public class AppointmentQuery {
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         return ps.executeQuery();
     }
+    public static int selectContactID(String contactName) throws SQLException {
+        String sql = "SELECT Contact_ID FROM contacts WHERE Contact_Name = ?";
+        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+        ps.setString(1,contactName);
+        ResultSet rs = ps.executeQuery();
+        int contactID = -1;
+        while(rs.next()){
+            contactID = rs.getInt("Contact_ID");
+        }
+        return contactID;
+    }
+    public static String selectContactName (int contactID) throws SQLException {
+        String sql = "SELECT Contact_Name FROM contacts WHERE Contact_ID = ?";
+        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+        ps.setInt(1,contactID);
+        ResultSet rs = ps.executeQuery();
+        String contactName = "Contact name not found";
+        while(rs.next()){
+            contactName = rs.getString("Contact_Name");
+        }
+        return contactName;
+    }
+
+    public static int selectUser() throws SQLException {
+        String sql = "SELECT User_ID FROM users User_ID WHERE User_Name = ?";
+        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+        ps.setString(1, login_screen.getUsername());
+        ResultSet rs = ps.executeQuery();
+        //-1 not a problem because user must be logged in, so it WILL find a user_id unless trickery is involved, such as removing a user while user is already logged in.
+        int userID = -1;
+        while(rs.next()){
+            userID = rs.getInt("User_ID");
+        }
+        return userID;
+    }
+
+    public static ResultSet getContactList() throws SQLException {
+        String sql = "SELECT Contact_Name FROM contacts";
+        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+        return ps.executeQuery();
+    }
 
     /**
      * FXML action methods.
      */
+    public void appointmentAddClick() throws IOException {
+        FXMLLoader partLoader = new FXMLLoader(getClass().getResource("appointment_add.fxml"));
+        Parent partRoot = partLoader.load();
+        Stage partStage = new Stage();
+        partStage.setScene(new Scene(partRoot));
+        partStage.show();
+    }
+
+    public void appointmentModifyClick() {
+        try {
+        selectedItem = appointmentsTable.getSelectionModel().getSelectedItem();
+        System.out.println(selectedItem.toString());
+        if (selectedItem != null){
+            String selectedString = selectedItem.toString();
+            selectedString = selectedString.substring(1,selectedString.length()-1);
+            selectedArr = selectedString.split(",");
+            //Lambda?
+            selectedArr = Arrays.stream(selectedArr).map(String::trim).toArray(String[]::new);
+
+            FXMLLoader appointmentLoader = new FXMLLoader(getClass().getResource("appointment_modify.fxml"));
+            Parent appointmentRoot = appointmentLoader.load();
+            Stage appointmentModifyStage = new Stage();
+            appointmentModifyStage.setScene(new Scene(appointmentRoot));
+
+            modifyAppointmentController modControl = appointmentLoader.getController();
+            modControl.initAppointmentData(selectedArr);
+            appointmentModifyStage.show();
+
+        }
+        else {
+            showMessageDialog(null, "Select a row to modify.");
+        }
+        }
+        catch (Exception e) {
+        showMessageDialog(null, "Select a row to modify.");
+        }
+    }
     public void loadScreen(String screenName) throws IOException {
         FXMLLoader screenLoader = new FXMLLoader(login_screen.class.getResource(screenName));
         Parent screenRoot = screenLoader.load();
@@ -124,34 +207,35 @@ public class AppointmentQuery {
     }
     public void appointmentDeleteClick() {
         try {
-            int confirmBtn = JOptionPane.YES_NO_OPTION;
-            int resultBtn = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this appointment?", "Warning", confirmBtn);
+            selectedItem = appointmentsTable.getSelectionModel().getSelectedItem();
+            if (selectedItem != null) {
+                int confirmBtn = JOptionPane.YES_NO_OPTION;
+                int resultBtn = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this appointment?", "Warning", confirmBtn);
 
-            if (resultBtn == JOptionPane.YES_OPTION) {
-                selectedItem = appointmentsTable.getSelectionModel().getSelectedItem();
-                if (selectedItem != null) {
-                    String selectedString = selectedItem.toString();
-                    selectedString = selectedString.substring(1, selectedString.length() - 1);
-                    selectedArr = selectedString.split(",");
-                    //Lambda?
-                    selectedArr = Arrays.stream(selectedArr).map(String::trim).toArray(String[]::new);
-                    String appID = selectedArr[0];
-                    int appointmentID = Integer.parseInt(appID);
+                if (resultBtn == JOptionPane.YES_OPTION) {
+                        String selectedString = selectedItem.toString();
+                        selectedString = selectedString.substring(1, selectedString.length() - 1);
+                        selectedArr = selectedString.split(",");
+                        //Lambda?
+                        selectedArr = Arrays.stream(selectedArr).map(String::trim).toArray(String[]::new);
+                        String appID = selectedArr[0];
+                        int appointmentID = Integer.parseInt(appID);
 
-                    AppointmentQuery.appointmentDelete(appointmentID);
-                    //TODO: change this to a refresh button or something
-                    btnCustomers.fire();
+                        AppointmentQuery.appointmentDelete(appointmentID);
+                        refreshTable();
 
-                    //TODO future: actually check if it was deleted. Select on customers to see if appointmentID exists. Write an error message if it's still there.
-                    showMessageDialog(null,"Customer deleted.");
+                        //TODO future: actually check if it was deleted. Select on customers to see if appointmentID exists. Write an error message if it's still there.
+                        showMessageDialog(null,"Appointment deleted.");
+                    }
                 }
                 else {
-                    showMessageDialog(null, "Select an appointment to delete.");
+                    showMessageDialog(null,"Select a row to delete.");
                 }
             }
-        }
-        catch (Exception e) {
+            catch (SQLException ex) {
             showMessageDialog(null, "Select an appointment to delete.");
+            throw new RuntimeException(ex);
+
         }
     }
 
@@ -161,6 +245,9 @@ public class AppointmentQuery {
     public void getData() {
         try {
             ObservableList<ObservableList> data = FXCollections.observableArrayList();
+            data.clear();
+            appointmentsTable.getItems().clear();
+            appointmentsTable.getColumns().clear();
             ResultSet rs = AppointmentQuery.select();
 
             for (int i = 0; i < rs.getMetaData().getColumnCount(); i++){
@@ -176,9 +263,6 @@ public class AppointmentQuery {
                 for (int i=1; i <= rs.getMetaData().getColumnCount();i++){
                     row.add(rs.getString(i));
                 }
-                //TODO: remove these comments, AppointmentQuery
-                //Let me see the row data added;
-                //System.out.println("Row [1] added " +row );
                 data.add(row);
             }
             appointmentsTable.setItems(data);
@@ -188,6 +272,11 @@ public class AppointmentQuery {
             System.out.println("Error getting data in AppointmentQuery");
             System.out.println(e);
         }
+    }
+    public void refreshTable(){
+        System.out.println("before refresh");
+        getData();
+        System.out.println("after refresh");
     }
     public void initialize() {
         getData();

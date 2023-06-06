@@ -32,6 +32,7 @@ public class CustomerQuery {
     public Button btnCustomerDelete;
     public Button btnCustomerModify;
     public Label labelNav;
+    public Button btnRefresh;
     /**
      * Variable declarations.
      */
@@ -107,9 +108,6 @@ public class CustomerQuery {
             int contactID = rs.getInt("Contact_ID");
             String contactName = rs.getString("Contact_Name");
             String contactEmail = rs.getString("Email");
-            System.out.print(contactID + " | ");
-            System.out.print(contactName + " | ");
-            System.out.print(contactEmail + "\n");
         }
          */
     }
@@ -212,16 +210,15 @@ public class CustomerQuery {
         catch (Exception e) {
             showMessageDialog(null, "Select a row to modify.");
         }
-
     }
     public void customerDeleteClick() {
         try {
-            int confirmBtn = JOptionPane.YES_NO_OPTION;
-            int resultBtn = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this customer?", "Warning", confirmBtn);
+            selectedItem = customersTable.getSelectionModel().getSelectedItem();
+            if (selectedItem != null) {
+                int confirmBtn = JOptionPane.YES_NO_OPTION;
+                int resultBtn = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this customer?", "Warning", confirmBtn);
 
-            if (resultBtn == JOptionPane.YES_OPTION) {
-                selectedItem = customersTable.getSelectionModel().getSelectedItem();
-                if (selectedItem != null) {
+                if (resultBtn == JOptionPane.YES_OPTION) {
                     String selectedString = selectedItem.toString();
                     selectedString = selectedString.substring(1, selectedString.length() - 1);
                     selectedArr = selectedString.split(",");
@@ -231,18 +228,20 @@ public class CustomerQuery {
                     int customerID = Integer.parseInt(cusID);
 
                     CustomerQuery.customerDelete(customerID);
-                    btnCustomers.fire();
+                    refreshTable();
 
-                    //TODO future: actually check if it was deleted. Select on customers to see if customerID exists. Write an error message if it's still there.
+                    //TODO future: actually check if it was deleted. Select on customers to see if appointmentID exists. Write an error message if it's still there.
                     showMessageDialog(null,"Customer deleted.");
                 }
-                else {
-                    showMessageDialog(null, "Select a row to delete.");
-                }
+            }
+            else {
+                showMessageDialog(null,"Select a row to delete.");
             }
         }
-        catch (Exception e) {
+        catch (SQLException ex) {
             showMessageDialog(null, "Select a row to delete.");
+            throw new RuntimeException(ex);
+
         }
     }
 

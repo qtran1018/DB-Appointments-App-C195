@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="termProject.AppointmentQuery">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="termProject.AppointmentQuery">
     <AnchorPane prefHeight="720.0" prefWidth="1280.0">
         <SplitPane dividerPositions="0.1643192488262911" prefHeight="720.0" prefWidth="1280.0">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="718.0" prefWidth="676.0">
@@ -48,9 +52,10 @@
                     </font>
                 </Label>
             <TableView fx:id="appointmentsTable" layoutX="35.0" layoutY="66.0" prefHeight="570.0" prefWidth="1000.0" />
-            <Button layoutX="488.0" layoutY="654.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="95.0" text="Modify" />
-            <Button layoutX="387.0" layoutY="654.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="95.0" text="Add" />
-            <Button layoutX="589.0" layoutY="654.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="95.0" text="Delete" />
+            <Button fx:id="btnAppointmentsModify" layoutX="488.0" layoutY="654.0" mnemonicParsing="false" onAction="#appointmentModifyClick" prefHeight="35.0" prefWidth="95.0" text="Modify" />
+            <Button fx:id="btnAppointmentAdd" layoutX="387.0" layoutY="654.0" mnemonicParsing="false" onAction="#appointmentAddClick" prefHeight="35.0" prefWidth="95.0" text="Add" />
+            <Button fx:id="btnAppointmentDelete" layoutX="589.0" layoutY="654.0" mnemonicParsing="false" onAction="#appointmentDeleteClick" prefHeight="35.0" prefWidth="95.0" text="Delete" />
+            <Button fx:id="btnRefresh" layoutX="947.0" layoutY="24.0" mnemonicParsing="false" onAction="#refreshTable" text="Refresh Table" />
             </AnchorPane>
         </SplitPane>
     </AnchorPane>
