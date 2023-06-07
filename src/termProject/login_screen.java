@@ -14,24 +14,21 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
-
 import javax.swing.*;
 import java.net.URL;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
-
 import static javax.swing.JOptionPane.showMessageDialog;
 
 
 public class login_screen extends Application implements Initializable {
+
+    //<editor-fold desc="Variables folded">
     public Button forgot_button;
     public Button exitBtn;
-
-    //<editor-fold desc="Variables>
-    /**
-     * Variable declarations.
-     */
+    public Label labelLocation;
+    public Label labelBigLogin;
     @FXML
     private Button login_button;
     @FXML
@@ -40,16 +37,13 @@ public class login_screen extends Application implements Initializable {
     private TextField username_field;
     @FXML
     private PasswordField password_field;
-    /**
-     *  Locale global variables
-     */
     Locale currentLocale = Locale.getDefault();
     String myCountry = currentLocale.getCountry();
-    String myLanguage = currentLocale.getDisplayLanguage();
+    String getLanguage = currentLocale.getDisplayLanguage();
+    public static boolean languageIsEnglish = true;
     static String loggedUser;
 
     //</editor-fold
-
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("login_screen.fxml")));
@@ -57,20 +51,25 @@ public class login_screen extends Application implements Initializable {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
-
-    /**
-     *Login Screen methods
-     */
     public void forgotClick() {
-        showMessageDialog(null,"Contact your system administrator for help.");
+        if (login_screen.isEnglish()){
+            showMessageDialog(null,"Contact your system administrator for help.");
+        }
+        else {
+            showMessageDialog(null,"Contactez votre administrateur système pour obtenir de l'aide.");
+        }
     }
     public void exitClick() {
         int confirmBtn = JOptionPane.YES_NO_OPTION;
-        int resultBtn = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit the program?", "Warning", confirmBtn);
-
+        int resultBtn;
+        if (login_screen.isEnglish()){
+            resultBtn = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit the program?", "Warning", confirmBtn);
+        }
+        else {
+            resultBtn = JOptionPane.showConfirmDialog(null, "Voulez-vous vraiment quitter le programme?", "Avertissement", confirmBtn);
+        }
         if (resultBtn == JOptionPane.YES_OPTION) {
             JDBC.closeConnection();
-            System.out.println("exit clicked");
             System.exit(0);
         }
     }
@@ -93,6 +92,9 @@ public class login_screen extends Application implements Initializable {
         //TODO: Maybe this will cause a problem, check back later.
         loggedUser = null;
     }
+    public static boolean isEnglish(){
+        return languageIsEnglish;
+    }
     public void loginClick() {
         try {
             String username = username_field.getText();
@@ -112,20 +114,38 @@ public class login_screen extends Application implements Initializable {
                 closeStage.close();
             }
             else {
-                showMessageDialog(null,"Username or password is incorrect.");
+                if (login_screen.isEnglish()){
+                    showMessageDialog(null,"Username or password is incorrect.");
+                }
+                else {
+                    showMessageDialog(null,"L'identifiant ou le mot de passe est incorrect.");
+                }
             }
         }
         catch (Exception e) {
-            showMessageDialog(null,"Something went wrong. Contact your system administrator.\n" + "Error:" + e);
+            if (login_screen.isEnglish()){
+                showMessageDialog(null,"Something went wrong. Contact your system administrator.\n" + "Error:" + e);
+            }
+            else {
+                showMessageDialog(null,"Quelque chose s'est mal passé. Contactez votre administrateur système.\n" + "Erreur: " + e);
+            }
         }
     }
     public void setStuff() {
-        System.out.println(myCountry);
-        System.out.println(myLanguage);
         login_location.setText(myCountry);
+        languageIsEnglish = getLanguage.equals("English");
+        if (login_screen.isEnglish()) {/*Do nothing*/}
+        else {
+            labelBigLogin.setText("Bienvenu!");
+            username_field.setPromptText("Nom d'utilisateur");
+            password_field.setPromptText("Mot de passe");
+            login_button.setText("Connexion");
+            forgot_button.setText("Oublié?");
+            labelLocation.setText("Emplacement:");
+            exitBtn.setText("Arrêter");
+        }
     }
     public void initialize(URL location, ResourceBundle resources){
-        //System.out.println("in login_screen initialize");
         setStuff();
     }
 

@@ -6,19 +6,27 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class addCustomerController {
 
+    //<editor-fold desc="Variables folded">
     public Button saveCustomer;
+    public Label labelName;
+    public Label labelCountry;
+    public Label labelAddress;
+    public Label labelPostal;
+    public Label labelState;
+    public Label labelPhone;
+    public Label labelPlace;
+    public Label labelCustomerID;
     @FXML
     private TextField customerIDField;
     @FXML
@@ -35,8 +43,9 @@ public class addCustomerController {
     private TextField customerPhoneField;
     @FXML
     private Button btnCancel;
+    //</editor-fold
 
-    //<editor-fold desc="Country State lists>
+    //<editor-fold desc="Country State lists folded">
     final ObservableList<String> countries = FXCollections.observableArrayList("U.S", "UK", "Canada");
     final ObservableList<String> usStates = FXCollections.observableArrayList(
             "Alabama",
@@ -116,7 +125,12 @@ public class addCustomerController {
 
         //Doubles up on create-date and update-date, created-by and updated-by, since they will be the same.
         CustomerQuery.customerInsert(customerName, customerAddress, customerPostal, customerPhone, customerCreateDate, customerCreatedBy, customerCreateDate, customerCreatedBy, customerDivisionID);
-        showMessageDialog(null,"Customer added.");
+        if (login_screen.isEnglish()){
+            showMessageDialog(null,"Customer added.");
+        }
+        else {
+            showMessageDialog(null,"Client ajouté.");
+        }
 
         //TODO: somehow refresh the table.
         FXMLLoader customerLoader = new FXMLLoader(getClass().getResource("customers_screen.fxml"));
@@ -139,9 +153,21 @@ public class addCustomerController {
                 case "U.S" -> customerStateField.setItems(usStates);
                 case "UK" -> customerStateField.setItems(ukStates);
                 case "Canada" -> customerStateField.setItems(caStates);
-                default -> throw new IllegalStateException("Invalid value.");
+                default -> throw new IllegalStateException("EN: Invalid value.\n FR:Valeur invalide.");
             }
         });
-
+        if (login_screen.isEnglish()) {/*Do nothing*/}
+        else {
+            labelCustomerID.setText("N ° de client");
+            labelName.setText("Nom et prénom");
+            labelCountry.setText("Pays");
+            labelAddress.setText("Adresse");
+            labelPostal.setText("Code Postal");
+            labelState.setText("Province");
+            labelPhone.setText("Téléphone");
+            labelPlace.setText("Client");
+            btnCancel.setText("Annuler");
+            saveCustomer.setText("Sauvegarder");
+        }
     }
 }

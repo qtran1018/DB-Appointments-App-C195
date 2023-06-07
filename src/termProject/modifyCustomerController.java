@@ -5,18 +5,26 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class modifyCustomerController {
 
+    //<editor-fold desc="Variables folded">
     public Button saveCustomer;
+    public Label labelName;
+    public Label labelCountry;
+    public Label labelAddress;
+    public Label labelPostal;
+    public Label labelState;
+    public Label labelPhone;
+    public Label labelPlace;
+    public Label labelCustomerID;
     @FXML
     private TextField customerIDField;
     @FXML
@@ -34,8 +42,9 @@ public class modifyCustomerController {
     @FXML
     private Button btnCancel;
     public String[] selectedArr;
+    //</editor-fold
 
-    //<editor-fold desc="Country State lists>
+    //<editor-fold desc="Country State lists folded">
     final ObservableList<String> countries = FXCollections.observableArrayList("U.S", "UK", "Canada");
     final ObservableList<String> usStates = FXCollections.observableArrayList(
             "Alabama",
@@ -113,7 +122,12 @@ public class modifyCustomerController {
         String customerLastUpdatedBy = login_screen.getUsername();
 
         CustomerQuery.customerUpdate(customerName,customerAddress, customerPostal, customerPhone, customerLastUpdate, customerLastUpdatedBy, customerDivisionID, customerID);
-        showMessageDialog(null,"Customer information updated.");
+        if (login_screen.isEnglish()){
+            showMessageDialog(null,"Customer information updated.");
+        }
+        else {
+            showMessageDialog(null,"Informations client mises à jour.");
+        }
 
         Stage closeModify = (Stage) btnCancel.getScene().getWindow();
         closeModify.close();
@@ -155,9 +169,18 @@ public class modifyCustomerController {
                 case "U.S" -> customerStateField.setItems(usStates);
                 case "UK" -> customerStateField.setItems(ukStates);
                 case "Canada" -> customerStateField.setItems(caStates);
-                default -> throw new IllegalStateException("Invalid value.");
+                default -> throw new IllegalStateException("EN: Invalid value.\n FR:Valeur invalide.");
             }
         });
-
+        labelCustomerID.setText("N ° de client");
+        labelName.setText("Nom et prénom");
+        labelCountry.setText("Pays");
+        labelAddress.setText("Adresse");
+        labelPostal.setText("Code Postal");
+        labelState.setText("Province");
+        labelPhone.setText("Téléphone");
+        labelPlace.setText("Client");
+        btnCancel.setText("Annuler");
+        saveCustomer.setText("Sauvegarder");
     }
 }

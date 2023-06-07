@@ -3,21 +3,17 @@ package termProject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class addAppointmentController {
 
+    //<editor-fold desc="Variables folded">
     public Button saveAppointment;
     public TextField appointmentTitleField;
     public TextField appointmentDescField;
@@ -32,10 +28,24 @@ public class addAppointmentController {
     public TextField appointmentUserID;
     public ComboBox<String> appointmentContact;
     public ResultSet rs;
+    public Label labelTitle;
+    public Label labelType;
+    public Label labelDescription;
+    public Label labelLocation;
+    public Label labelStartDate;
+    public Label labelCustomerID;
+    public Label labelAppointment;
+    public Label labelAppointmentID;
+    public Label labelUserID;
+    public Label labelContact;
+    public Label labelEndDate;
+    public Label labelStartTime;
+    public Label labelEndTime;
     @FXML
     private Button btnCancel;
+    //</editor-fold
 
-    //<editor-fold desc="ComboBox lists>
+    //<editor-fold desc="ComboBox lists folded">
     final ObservableList<String> times = FXCollections.observableArrayList("00:00", "01:00", "02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","21:00","22:00","23:00");
     ObservableList<String> contacts = FXCollections.observableArrayList();
 
@@ -80,7 +90,12 @@ public class addAppointmentController {
                 customerID,
                 userID,
                 contactID);
-        showMessageDialog(null,"Appointment added.");
+        if (login_screen.isEnglish()){
+            showMessageDialog(null,"Appointment added.");
+        }
+        else {
+            showMessageDialog(null,"Rendez-vous ajouté.");
+        }
 
         //TODO: somehow refresh the table.
 
@@ -104,5 +119,26 @@ public class addAppointmentController {
             contacts.add(rs.getString("Contact_Name"));
         }
         appointmentContact.setItems(contacts);
+
+        if (login_screen.isEnglish()) {/*Do nothing*/}
+        else {
+            //TODO: labelnav is too long in french, fix.
+            labelAppointment.setText("Rendez-vous");
+            labelAppointmentID.setText("ID de rendez-vous");
+            labelTitle.setText("Titre");
+            labelDescription.setText("Description");
+            labelLocation.setText("Emplacement");
+            labelType.setText("Taper");
+            labelStartDate.setText("Date de début");
+            labelEndDate.setText("Date de fin");
+            labelStartTime.setText("Heure de début");
+            labelEndTime.setText("Heure de fin");
+            labelCustomerID.setText("N ° de client");
+            labelUserID.setText("ID de l'utilisateur");
+            labelContact.setText("Contact");
+            saveAppointment.setText("Sauvegarder");
+            btnCancel.setText("Annuler");
+        }
     }
+
 }

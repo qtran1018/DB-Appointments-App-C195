@@ -35,42 +35,42 @@
             <TextField fx:id="customerNameField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
             <TextField fx:id="customerAddressField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
             <TextField fx:id="customerPostalField" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-            <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Full Name"
+            <Label fx:id="labelName" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Full Name"
                    GridPane.halignment="CENTER" GridPane.rowIndex="2">
                 <font>
                     <Font size="14.0"/>
                 </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Country" GridPane.rowIndex="5">
+            <Label fx:id="labelCountry" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Country" GridPane.rowIndex="5">
                 <font>
                     <Font size="14.0"/>
                 </font>
             </Label>
-            <Label alignment="CENTER" contentDisplay="RIGHT" prefHeight="113.0" prefWidth="235.0" text="Address"
+            <Label fx:id="labelAddress" alignment="CENTER" contentDisplay="RIGHT" prefHeight="113.0" prefWidth="235.0" text="Address"
                    GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                 <font>
                     <Font size="14.0"/>
                 </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Postal Code"
+            <Label fx:id="labelPostal" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Postal Code"
                    GridPane.rowIndex="4">
                 <font>
                     <Font size="14.0"/>
                 </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="State / Province"
+            <Label fx:id="labelState" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="State / Province"
                    GridPane.rowIndex="6">
                 <font>
                     <Font size="14.0"/>
                 </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Phone" GridPane.rowIndex="7">
+            <Label fx:id="labelPhone" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Phone" GridPane.rowIndex="7">
                 <font>
                     <Font size="14.0"/>
                 </font>
             </Label>
             <TextField fx:id="customerPhoneField" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="103.0" prefWidth="288.0"
+            <Label fx:id="labelPlace" alignment="CENTER" contentDisplay="CENTER" prefHeight="103.0" prefWidth="288.0"
                    text="Customer">
                 <font>
                     <Font size="24.0"/>
@@ -82,7 +82,7 @@
             <Button fx:id="btnCancel" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
                     onAction="#customerCancel" prefHeight="25.0" prefWidth="95.0" text="Cancel"
                     GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="8"/>
-            <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Customer ID"
+            <Label fx:id="labelCustomerID" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Customer ID"
                    GridPane.rowIndex="1">
                 <font>
                     <Font size="14.0"/>

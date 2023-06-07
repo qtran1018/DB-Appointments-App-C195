@@ -15,17 +15,17 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-
 import javax.swing.*;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
-
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class AppointmentQuery {
+
+    //<editor-fold desc="Variables folded">
     public Label labelNav;
     public Label labelTables;
     public Button btnCustomers;
@@ -35,19 +35,15 @@ public class AppointmentQuery {
     public Button btnAppointmentsModify;
     public Button btnAppointmentDelete;
     public Button btnRefresh;
-    /**
-     * Variable declarations.
-     */
+    public Label labelPlace;
     @FXML
     private Button btnHome;
     @FXML
     private TableView appointmentsTable;
     String[] selectedArr;
     Object selectedItem;
+    //</editor-fold
 
-    /**
-     * SQL statement methods.
-     */
     public static int appointmentInsert(String title, String description, String location, String type, String start, String end, String createDate, String createdBy, String lastUpdate, String lastUpdatedBy, int customerID, int userID, int contactID) throws SQLException {
         String sql = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -139,9 +135,6 @@ public class AppointmentQuery {
         return ps.executeQuery();
     }
 
-    /**
-     * FXML action methods.
-     */
     public void appointmentAddClick() throws IOException {
         FXMLLoader partLoader = new FXMLLoader(getClass().getResource("appointment_add.fxml"));
         Parent partRoot = partLoader.load();
@@ -172,11 +165,21 @@ public class AppointmentQuery {
 
         }
         else {
-            showMessageDialog(null, "Select a row to modify.");
+            if (login_screen.isEnglish()){
+                showMessageDialog(null, "Select a row to modify.");
+            }
+            else {
+                showMessageDialog(null, "Sélectionnez une ligne à modifier.");
+            }
         }
         }
         catch (Exception e) {
-        showMessageDialog(null, "Select a row to modify.");
+            if (login_screen.isEnglish()){
+                showMessageDialog(null, "Select a row to modify.");
+            }
+            else {
+                showMessageDialog(null, "Sélectionnez une ligne à modifier.");
+            }
         }
     }
     public void loadScreen(String screenName) throws IOException {
@@ -191,11 +194,16 @@ public class AppointmentQuery {
         closeStage.close();
     }
     public void logoutClick() throws IOException {
-        //TODO: see if logClick and loginClick exception being different is a problem. One throws IOException, other does Try-Catch
         int confirmBtn = JOptionPane.YES_NO_OPTION;
-        int resultBtn = JOptionPane.showConfirmDialog(null, "Are you sure you want to log out?", "Warning", confirmBtn);
-
+        int resultBtn;
+        if (login_screen.isEnglish()){
+            resultBtn = JOptionPane.showConfirmDialog(null, "Are you sure you want to logout?", "Warning", confirmBtn);
+        }
+        else {
+            resultBtn = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir vous déconnecter?", "Avertissement", confirmBtn);
+        }
         if (resultBtn == JOptionPane.YES_OPTION) {
+            login_screen.unsetUsername();
             loadScreen("login_screen.fxml");
         }
     }
@@ -210,7 +218,13 @@ public class AppointmentQuery {
             selectedItem = appointmentsTable.getSelectionModel().getSelectedItem();
             if (selectedItem != null) {
                 int confirmBtn = JOptionPane.YES_NO_OPTION;
-                int resultBtn = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this appointment?", "Warning", confirmBtn);
+                int resultBtn;
+                if (login_screen.isEnglish()){
+                    resultBtn = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this appointment?", "Warning", confirmBtn);
+                }
+                else {
+                    resultBtn = JOptionPane.showConfirmDialog(null, "Voulez-vous vraiment supprimer ce rendez-vous?", "Avertissement", confirmBtn);
+                }
 
                 if (resultBtn == JOptionPane.YES_OPTION) {
                         String selectedString = selectedItem.toString();
@@ -225,23 +239,34 @@ public class AppointmentQuery {
                         refreshTable();
 
                         //TODO future: actually check if it was deleted. Select on customers to see if appointmentID exists. Write an error message if it's still there.
+                    if (login_screen.isEnglish()){
                         showMessageDialog(null,"Appointment deleted.");
+                    }
+                    else {
+                        showMessageDialog(null, "Rendez-vous supprimé.");
+                    }
                     }
                 }
                 else {
-                    showMessageDialog(null,"Select a row to delete.");
+                if (login_screen.isEnglish()){
+                    showMessageDialog(null, "Select a row to delete.");
+                }
+                else {
+                    showMessageDialog(null, "Sélectionnez une ligne à supprimer.");
+                }
                 }
             }
             catch (SQLException ex) {
-            showMessageDialog(null, "Select an appointment to delete.");
+                if (login_screen.isEnglish()){
+                    showMessageDialog(null, "Select an appointment to delete.");
+                }
+                else {
+                    showMessageDialog(null, "Sélectionnez un rendez-vous à supprimer.");
+                }
             throw new RuntimeException(ex);
 
         }
     }
-
-    /**
-     * Table setting code.
-     */
     public void getData() {
         try {
             ObservableList<ObservableList> data = FXCollections.observableArrayList();
@@ -269,8 +294,12 @@ public class AppointmentQuery {
             }
         catch (Exception e){
             e.printStackTrace();
-            System.out.println("Error getting data in AppointmentQuery");
-            System.out.println(e);
+            if (login_screen.isEnglish()){
+                showMessageDialog(null, "Error getting data.");
+            }
+            else {
+                showMessageDialog(null, "Erreur lors de l'obtention des données.");
+            }
         }
     }
     public void refreshTable(){
@@ -280,5 +309,20 @@ public class AppointmentQuery {
     }
     public void initialize() {
         getData();
+        if (login_screen.isEnglish()) {/*Do nothing*/}
+        else {
+            //TODO: labelnav is too long in french, fix.
+            labelNav.setText("La navigation");
+            btnHome.setText("Maison");
+            labelTables.setText("Les tables");
+            btnCustomers.setText("Clients");
+            btnAppointments.setText("Rendez-vous");
+            btnLogout.setText("Se déconnecter");
+            labelPlace.setText("Clients");
+            btnRefresh.setText("Rafraîchir");
+            btnAppointmentAdd.setText("Ajouter");
+            btnAppointmentsModify.setText("Modifier");
+            btnAppointmentDelete.setText("Supprimer");
+        }
     }
 }

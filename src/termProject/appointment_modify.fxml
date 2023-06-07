@@ -39,73 +39,73 @@
             <TextField fx:id="appointmentTitleField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="appointmentDescField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <TextField fx:id="appointmentLocField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Title" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+            <Label fx:id="labelTitle" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Title" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                 <font>
                     <Font size="14.0" />
                 </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Type" GridPane.rowIndex="5">
+            <Label fx:id="labelType" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Type" GridPane.rowIndex="5">
                 <font>
                     <Font size="14.0" />
                 </font>
             </Label>
-            <Label alignment="CENTER" contentDisplay="RIGHT" prefHeight="113.0" prefWidth="235.0" text="Description" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+            <Label fx:id="labelDescription" alignment="CENTER" contentDisplay="RIGHT" prefHeight="113.0" prefWidth="235.0" text="Description" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                 <font>
                     <Font size="14.0" />
                 </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Location" GridPane.rowIndex="4">
+            <Label fx:id="labelLocation" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Location" GridPane.rowIndex="4">
                 <font>
                     <Font size="14.0" />
                 </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Start Date" GridPane.rowIndex="6">
+            <Label fx:id="labelStartDate" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Start Date" GridPane.rowIndex="6">
                 <font>
                     <Font size="14.0" />
                 </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Customer ID" GridPane.rowIndex="10">
+            <Label fx:id="labelCustomerID" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Customer ID" GridPane.rowIndex="10">
                 <font>
                     <Font size="14.0" />
                 </font>
             </Label>
             <TextField fx:id="appointmentCustomerID" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="103.0" prefWidth="288.0" text="Appointment">
+            <Label fx:id="labelAppointment" alignment="CENTER" contentDisplay="CENTER" prefHeight="103.0" prefWidth="288.0" text="Appointment">
                 <font>
                     <Font size="24.0" />
                 </font>
             </Label>
             <Button fx:id="saveAppointment" mnemonicParsing="false" onAction="#appointmentSave" prefHeight="25.0" prefWidth="95.0" text="Save" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="13" />
             <Button fx:id="btnCancel" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#appointmentCancel" prefHeight="25.0" prefWidth="95.0" text="Cancel" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="13" />
-            <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Appointment ID" GridPane.rowIndex="1">
+            <Label fx:id="labelAppointmentID" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Appointment ID" GridPane.rowIndex="1">
                 <font>
                     <Font size="14.0" />
                 </font>
             </Label>
             <TextField fx:id="appointmentIDField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          <TextField fx:id="appointmentTypeField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-         <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="User ID" GridPane.rowIndex="11">
+         <Label fx:id="labelUserID" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="User ID" GridPane.rowIndex="11">
             <font>
                <Font size="14.0" />
             </font>
          </Label>
-         <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Contact" GridPane.rowIndex="12">
+         <Label fx:id="labelContact" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Contact" GridPane.rowIndex="12">
             <font>
                <Font size="14.0" />
             </font>
          </Label>
-         <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="End Date" GridPane.rowIndex="7">
+         <Label fx:id="labelEndDate" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="End Date" GridPane.rowIndex="7">
             <font>
                <Font size="14.0" />
             </font>
          </Label>
          <DatePicker fx:id="appointmentStartDate" prefHeight="25.0" prefWidth="230.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-         <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Start Time" GridPane.rowIndex="8">
+         <Label fx:id="labelStartTime" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Start Time" GridPane.rowIndex="8">
             <font>
                <Font size="14.0" />
             </font>
          </Label>
-         <Label alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="End Time" GridPane.rowIndex="9">
+         <Label fx:id="labelEndTime" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="End Time" GridPane.rowIndex="9">
             <font>
                <Font size="14.0" />
             </font>
