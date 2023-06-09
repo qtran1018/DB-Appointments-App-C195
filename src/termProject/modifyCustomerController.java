@@ -172,15 +172,17 @@ public class modifyCustomerController {
                 default -> throw new IllegalStateException("EN: Invalid value.\n FR:Valeur invalide.");
             }
         });
-        labelCustomerID.setText("N ° de client");
-        labelName.setText("Nom et prénom");
-        labelCountry.setText("Pays");
-        labelAddress.setText("Adresse");
-        labelPostal.setText("Code Postal");
-        labelState.setText("Province");
-        labelPhone.setText("Téléphone");
-        labelPlace.setText("Client");
-        btnCancel.setText("Annuler");
-        saveCustomer.setText("Sauvegarder");
+        if (!login_screen.isEnglish()) {
+            labelCustomerID.setText("N ° de client");
+            labelName.setText("Nom et prénom");
+            labelCountry.setText("Pays");
+            labelAddress.setText("Adresse");
+            labelPostal.setText("Code Postal");
+            labelState.setText("Province");
+            labelPhone.setText("Téléphone");
+            labelPlace.setText("Client");
+            btnCancel.setText("Annuler");
+            saveCustomer.setText("Sauvegarder");
+        }
     }
 }

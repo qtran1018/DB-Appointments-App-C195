@@ -1,24 +1,31 @@
 package termProject;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
 import javax.swing.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
 import static javax.swing.JOptionPane.showMessageDialog;
 
 
@@ -101,6 +108,16 @@ public class login_screen extends Application implements Initializable {
             String password = password_field.getText();
 
             if (loginCheck(username, password)) {
+                try (FileWriter fw = new FileWriter("login_activity.txt", true);
+                     BufferedWriter bw = new BufferedWriter(fw))
+                {
+                    bw.write(Instant.now().truncatedTo(ChronoUnit.SECONDS).toString().replaceAll("[TZ]"," ") + "|" + username + "|" + "Success\n");
+                    bw.flush();
+                } catch (IOException e) {
+                    System.out.println("An error occurred.");
+                    e.printStackTrace();
+                }
+
                 setUserName(username);
                 //Future improvement: use the loadScreen method.
                 FXMLLoader screenLoader = new FXMLLoader(getClass().getResource("home_screen.fxml"));
@@ -116,9 +133,24 @@ public class login_screen extends Application implements Initializable {
             else {
                 if (login_screen.isEnglish()){
                     showMessageDialog(null,"Username or password is incorrect.");
+                    if (username.isEmpty()){
+                        username = "(blank)";
+                    }
                 }
                 else {
+                    if (username.isEmpty()){
+                        username = "(blank)";
+                    }
                     showMessageDialog(null,"L'identifiant ou le mot de passe est incorrect.");
+                }
+                try (FileWriter fw = new FileWriter("login_activity.txt", true);
+                     BufferedWriter bw = new BufferedWriter(fw))
+                {
+                    bw.write(Instant.now().truncatedTo(ChronoUnit.SECONDS).toString().replaceAll("[TZ]"," ") + "|" + username + "|" + "Failed\n");
+                    bw.flush();
+                } catch (IOException e) {
+                    System.out.println("An error occurred.");
+                    e.printStackTrace();
                 }
             }
         }
@@ -148,7 +180,6 @@ public class login_screen extends Application implements Initializable {
     public void initialize(URL location, ResourceBundle resources){
         setStuff();
     }
-
     public static void main(String[] args) {
         JDBC.openConnection();
         launch(args);

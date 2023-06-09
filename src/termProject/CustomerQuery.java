@@ -46,7 +46,7 @@ public class CustomerQuery {
     String[] selectedArr;
     //</editor-fold
     //-------------------------------------------------------------------------------
-    public static int customerInsert(String customerName, String customerAddress, String customerPostal, String customerPhone, String createDate, String createdBy, String lastUpdate, String lastUpdatedBy, int divisionID) throws SQLException {
+    public static void customerInsert(String customerName, String customerAddress, String customerPostal, String customerPhone, String createDate, String createdBy, String lastUpdate, String lastUpdatedBy, int divisionID) throws SQLException {
         String sql = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By, Last_Update, Last_Updated_By, Division_ID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setString(1,customerName);
@@ -58,12 +58,12 @@ public class CustomerQuery {
         ps.setString(7, lastUpdate);
         ps.setString(8,lastUpdatedBy);
         ps.setInt(9, divisionID);
-        return ps.executeUpdate();
+        ps.executeUpdate();
         //int rowsAffected = ps.executeUpdate(); Redundant, converted to inline return.
         //return rowsAffected;
     }
 
-    public static int customerUpdate(String customerName, String customerAddress, String customerPostal, String customerPhone, String lastUpdate, String lastUpdatedBy, int divisionID, int customerID) throws SQLException {
+    public static void customerUpdate(String customerName, String customerAddress, String customerPostal, String customerPhone, String lastUpdate, String lastUpdatedBy, int divisionID, int customerID) throws SQLException {
         String sql = "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Last_Update = ?, Last_Updated_By = ?, Division_ID = ? WHERE Customer_ID = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setString(1, customerName);
@@ -74,24 +74,24 @@ public class CustomerQuery {
         ps.setString(6, lastUpdatedBy);
         ps.setInt(7,divisionID);
         ps.setInt(8,customerID);
-        return ps.executeUpdate();
+        ps.executeUpdate();
     }
 
-    public static int customerDelete(int customerID) throws SQLException {
+    public static void customerDelete(int customerID) throws SQLException {
         //WORKS
         CustomerQuery.customerDeleteAppointment(customerID);
         String sql = "DELETE FROM customers WHERE Customer_ID = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setInt(1, customerID);
-        return ps.executeUpdate();
+        ps.executeUpdate();
     }
 
-    public static int customerDeleteAppointment(int customerID) throws SQLException {
+    public static void customerDeleteAppointment(int customerID) throws SQLException {
         //WORKS
         String sql = "DELETE FROM appointments WHERE Customer_ID = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setInt(1,customerID);
-        return ps.executeUpdate();
+        ps.executeUpdate();
     }
 
     public static ResultSet select() throws SQLException {
@@ -306,8 +306,7 @@ public class CustomerQuery {
     //-------------------------------------------------------------------------------
     public void initialize() {
         getData();
-        if (login_screen.isEnglish()) {/*Do nothing*/}
-        else {
+        if (!login_screen.isEnglish()){
             //TODO: labelnav is too long in french, fix.
             labelNav.setText("La navigation");
             btnHome.setText("Maison");

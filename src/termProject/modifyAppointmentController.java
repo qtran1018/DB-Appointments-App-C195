@@ -7,8 +7,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
-import java.time.LocalDate;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -66,14 +65,14 @@ public class modifyAppointmentController {
         String appointmentType = appointmentTypeField.getText();
         int appointmentID = Integer.parseInt(appointmentIDField.getText());
 
-        //TODO: conversions maybe. MAYBE use PreparedStatement ps.setTimestamp stmt.setTimestamp(1, t, Calendar.getInstance(TimeZone.getTimeZone("UTC")))
-        //Start Date
-        String appointmentStart = appointmentStartDate.getValue() + " " + appointmentStartTime.getValue() + ":00";
-        //End Date
-        String appointmentEnd = appointmentEndDate.getValue() + " " + appointmentEndTime.getValue() + ":00";
+        //DATE formatter.
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        //From user's input of datetime to UTC.
+        String appointmentStart = LocalDateTime.parse(appointmentStartDate.getValue() + " " + appointmentStartTime.getValue() + ":00", formatter).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS).toString().replaceAll("[TZ]"," ").trim()+":00";
+        String appointmentEnd = LocalDateTime.parse(appointmentEndDate.getValue() + " " + appointmentEndTime.getValue() + ":00", formatter).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS).toString().replaceAll("[TZ]"," ").trim()+":00";
 
-        String appointmentCreateDate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString().replaceAll("[TZ]"," ");
-        String appointmentCreatedBy = login_screen.getUsername();
+        String appointmentUpdateDate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString().replaceAll("[TZ]"," ");
+        String appointmentUpdatedBy = login_screen.getUsername();
         int customerID = Integer.parseInt(appointmentCustomerID.getText());
         int userID = AppointmentQuery.selectUser();
         int contactID = AppointmentQuery.selectContactID(appointmentContact.getValue());
@@ -86,8 +85,8 @@ public class modifyAppointmentController {
                 appointmentType,
                 appointmentStart,
                 appointmentEnd,
-                appointmentCreateDate,
-                appointmentCreatedBy,
+                appointmentUpdateDate,
+                appointmentUpdatedBy,
                 customerID,
                 userID,
                 contactID,
@@ -119,8 +118,30 @@ public class modifyAppointmentController {
         String startDateTime = selectedArr[5];
         String endDateTime = selectedArr[6];
         //Makes LocalDate type, so it can be set to the DatePicker boxes. Substring is to pick only the date, leave the time.
-        LocalDate startDate = LocalDate.parse(startDateTime.substring(0,10), formatter);
-        LocalDate endDate = LocalDate.parse(endDateTime.substring(0,10), formatter);
+        LocalDate startDate;
+        LocalDate endDate;
+
+        LocalDateTime localDateTimeStart = LocalDateTime.parse(startDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        ZonedDateTime zonedDateTimeStart = localDateTimeStart.atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneOffset.systemDefault());
+
+        LocalDateTime localDateTimeEnd = LocalDateTime.parse(endDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        ZonedDateTime zonedDateTimeEnd = localDateTimeEnd.atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneOffset.systemDefault());
+
+        //Should be 2023-06-15 04:00
+        //          2023-06-15 06:00
+        //String replacedStart = zonedDateTimeStart.toString().replaceAll("[T]"," ").substring(0,16);
+        //String replacedEnd = zonedDateTimeEnd.toString().replaceAll("[T]"," ").substring(0,16);
+
+        //SENT TO DATEPICKER
+        String truncatedTimeStart = zonedDateTimeStart.toString().replaceAll("T", " ").substring(0, 16);
+        startDate = LocalDate.parse(truncatedTimeStart.substring(0,10), formatter);
+        String truncatedTimeEnd = zonedDateTimeEnd.toString().replaceAll("T", " ").substring(0, 16);
+        endDate = LocalDate.parse(truncatedTimeEnd.substring(0,10), formatter);
+
+        System.out.println(zonedDateTimeStart.toString().replaceAll("T"," ").substring(17,22));
+        System.out.println(zonedDateTimeEnd.toString().replaceAll("T"," ").substring(17,22));
+
+
 
         int contactID = Integer.parseInt(selectedArr[13]);
         String contactUserName = AppointmentQuery.selectContactName(contactID);
@@ -133,8 +154,11 @@ public class modifyAppointmentController {
         appointmentCustomerID.setText(customerID);
         appointmentUserID.setText(userID);
         appointmentContact.setValue(contactUserName);
+
         appointmentStartDate.setValue(startDate);
         appointmentEndDate.setValue(endDate);
+        appointmentStartTime.setValue(truncatedTimeStart.replaceAll("T"," ").substring(11,16));
+        appointmentEndTime.setValue(truncatedTimeEnd.replaceAll("T"," ").substring(11,16));
 
 
     }
@@ -156,8 +180,7 @@ public class modifyAppointmentController {
         }
         appointmentContact.setItems(contacts);
 
-        if (login_screen.isEnglish()) {/*Do nothing*/}
-        else {
+        if (!login_screen.isEnglish()) {
             //TODO: labelnav is too long in french, fix.
             labelAppointment.setText("Rendez-vous");
             labelAppointmentID.setText("ID de rendez-vous");

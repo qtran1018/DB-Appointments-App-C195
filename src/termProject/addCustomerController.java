@@ -156,8 +156,7 @@ public class addCustomerController {
                 default -> throw new IllegalStateException("EN: Invalid value.\n FR:Valeur invalide.");
             }
         });
-        if (login_screen.isEnglish()) {/*Do nothing*/}
-        else {
+        if (!login_screen.isEnglish()){
             labelCustomerID.setText("N ° de client");
             labelName.setText("Nom et prénom");
             labelCountry.setText("Pays");

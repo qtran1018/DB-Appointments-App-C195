@@ -7,7 +7,8 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -62,18 +63,18 @@ public class addAppointmentController {
         String appointmentDescription = appointmentDescField.getText();
         String appointmentLocation = appointmentLocField.getText();
         String appointmentType = appointmentTypeField.getText();
-
-        //TODO: conversions maybe. MAYBE use PreparedStatement ps.setTimestamp stmt.setTimestamp(1, t, Calendar.getInstance(TimeZone.getTimeZone("UTC")))
-        //Start Date
-        String appointmentStart = appointmentStartDate.getValue() + " " + appointmentStartTime.getValue() + ":00";
-        //End Date
-        String appointmentEnd = appointmentEndDate.getValue() + " " + appointmentEndTime.getValue() + ":00";
-
         String appointmentCreateDate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString().replaceAll("[TZ]"," ");
         String appointmentCreatedBy = login_screen.getUsername();
+
         int customerID = Integer.parseInt(appointmentCustomerID.getText());
         int userID = AppointmentQuery.selectUser();
         int contactID = AppointmentQuery.selectContactID(appointmentContact.getValue());
+
+        //DATE formatter.
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        //From user's input of datetime to UTC.
+        String appointmentStart = LocalDateTime.parse(appointmentStartDate.getValue() + " " + appointmentStartTime.getValue() + ":00", formatter).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS).toString().replaceAll("[TZ]"," ").trim()+":00";
+        String appointmentEnd = LocalDateTime.parse(appointmentEndDate.getValue() + " " + appointmentEndTime.getValue() + ":00", formatter).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS).toString().replaceAll("[TZ]"," ").trim()+":00";
 
         //Doubles up on create-date and update-date, created-by and updated-by, since they will be the same.
         AppointmentQuery.appointmentInsert(
@@ -120,8 +121,7 @@ public class addAppointmentController {
         }
         appointmentContact.setItems(contacts);
 
-        if (login_screen.isEnglish()) {/*Do nothing*/}
-        else {
+        if (!login_screen.isEnglish()){
             //TODO: labelnav is too long in french, fix.
             labelAppointment.setText("Rendez-vous");
             labelAppointmentID.setText("ID de rendez-vous");
