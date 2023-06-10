@@ -76,6 +76,7 @@ public class addAppointmentController {
         String appointmentStart = LocalDateTime.parse(appointmentStartDate.getValue() + " " + appointmentStartTime.getValue() + ":00", formatter).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS).toString().replaceAll("[TZ]"," ").trim()+":00";
         String appointmentEnd = LocalDateTime.parse(appointmentEndDate.getValue() + " " + appointmentEndTime.getValue() + ":00", formatter).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS).toString().replaceAll("[TZ]"," ").trim()+":00";
 
+        //TODO: everything here and to the close is in the else-statement. Above is if-statement checking the variables: dates, times, and make sure nothing is empty.
         //Doubles up on create-date and update-date, created-by and updated-by, since they will be the same.
         AppointmentQuery.appointmentInsert(
                 appointmentTitle,
@@ -97,9 +98,6 @@ public class addAppointmentController {
         else {
             showMessageDialog(null,"Rendez-vous ajouté.");
         }
-
-        //TODO: somehow refresh the table.
-
         Stage addAppointment = (Stage) btnCancel.getScene().getWindow();
         addAppointment.close();
     }

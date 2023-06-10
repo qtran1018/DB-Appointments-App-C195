@@ -77,6 +77,7 @@ public class modifyAppointmentController {
         int userID = AppointmentQuery.selectUser();
         int contactID = AppointmentQuery.selectContactID(appointmentContact.getValue());
 
+        //TODO: same as addAppointment.
         //Doubles up on create-date and update-date, created-by and updated-by, since they will be the same.
         AppointmentQuery.appointmentUpdate(
                 appointmentTitle,

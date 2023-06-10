@@ -20,15 +20,14 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static javax.swing.JOptionPane.showMessageDialog;
-
-
 public class login_screen extends Application implements Initializable {
 
     //<editor-fold desc="Variables folded">
@@ -49,6 +48,8 @@ public class login_screen extends Application implements Initializable {
     String getLanguage = currentLocale.getDisplayLanguage();
     public static boolean languageIsEnglish = true;
     static String loggedUser;
+    int appointmentID;
+    String appointmentUserTime;
 
     //</editor-fold
     @Override
@@ -86,7 +87,6 @@ public class login_screen extends Application implements Initializable {
         ps.setString(1,username);
         ps.setString(2,password);
         ResultSet rs = ps.executeQuery();
-
         return rs.isBeforeFirst();
     }
     public static String getUsername(){
@@ -99,9 +99,26 @@ public class login_screen extends Application implements Initializable {
         //TODO: Maybe this will cause a problem, check back later.
         loggedUser = null;
     }
+    //-----------------------------------------------------------------------
+
+    //TODO future: Don't think I need these setters and getters with the class-wide default variables.
+    public void setAppointmentIdMessage(int appointmentID){
+        this.appointmentID = appointmentID;
+    }
+    public int getAppointmentIdMessage(){
+        return appointmentID;
+    }
+    public void setAppointmentUserTimeMessage(String appointmentUserTime){
+        this.appointmentUserTime = appointmentUserTime;
+    }
+    public String getAppointmentUserTime(){
+        return appointmentUserTime;
+    }
+    //-----------------------------------------------------------------------
     public static boolean isEnglish(){
         return languageIsEnglish;
     }
+
     public void loginClick() {
         try {
             String username = username_field.getText();
@@ -118,17 +135,53 @@ public class login_screen extends Application implements Initializable {
                     e.printStackTrace();
                 }
 
+                //Get 15-min or less appointment notice
+                ResultSet rs = HomeController.checkAppointmentsSoon();
+
+                if (rs.isBeforeFirst()) {
+                    while (rs.next()) {
+                        //Set and Get ID
+                        int appointmentID = rs.getInt("Appointment_ID");
+                        setAppointmentIdMessage(appointmentID);
+
+                        //Set and Get converted time
+                        String appointmentTimeUTC = rs.getString("Start");
+
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                        LocalDateTime localDateTimeStart = LocalDateTime.parse(appointmentTimeUTC, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                        ZonedDateTime zonedDateTimeStart = localDateTimeStart.atZone(ZoneId.of("UTC")).withZoneSameInstant(ZoneOffset.systemDefault());
+
+                        String truncatedTimeStart = zonedDateTimeStart.toString().replaceAll("T", " ").substring(0, 16);
+                        String appointmentUserTime = LocalDate.parse(truncatedTimeStart.substring(0,10), formatter) + " " + truncatedTimeStart.replaceAll("T"," ").substring(11,16);
+                        setAppointmentUserTimeMessage(appointmentUserTime);
+                    }
+                    if(isEnglish()){
+                        showMessageDialog(null,"There is an appointment within 15 minutes.\n" + "Appointment_ID: " + getAppointmentIdMessage() + "\n" + "Date and Time: " + getAppointmentUserTime());
+                    }
+                    else {
+                        showMessageDialog(null,"Il y a un rendez-vous dans les 15 minutes.\n" + "Rendez-vous_ID: " + getAppointmentIdMessage() + "\n" + "Date et l'heure: " + getAppointmentUserTime());
+                    }
+                }
+                else {
+                    if(isEnglish()){
+                        showMessageDialog(null,"There are no upcoming appointments.");
+                    }
+                    else {
+                        showMessageDialog(null,"Il n'y a pas de rendez-vous à venir.");
+                    }
+                }
+
                 setUserName(username);
-                //Future improvement: use the loadScreen method.
+                //TODO future: use the loadScreen method.
                 FXMLLoader screenLoader = new FXMLLoader(getClass().getResource("home_screen.fxml"));
                 Parent screenRoot = screenLoader.load();
                 Stage screenStage = new Stage();
                 screenStage.setScene(new Scene(screenRoot));
                 screenStage.setTitle("Term Project Application");
                 screenStage.show();
-
                 Stage closeStage = (Stage) login_button.getScene().getWindow();
                 closeStage.close();
+
             }
             else {
                 if (login_screen.isEnglish()){

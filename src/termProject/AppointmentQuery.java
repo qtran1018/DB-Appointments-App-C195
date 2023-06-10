@@ -55,7 +55,7 @@ public class AppointmentQuery {
     Object selectedItem;
     //</editor-fold
     final ObservableList<Integer> months = FXCollections.observableArrayList(1,2,3,4,5,6,7,8,9,10,11,12);
-    final ObservableList<Integer> years = FXCollections.observableArrayList();
+    public ObservableList<Integer> years = FXCollections.observableArrayList();
     public static void appointmentInsert(String title, String description, String location, String type, String start, String end, String createDate, String createdBy, String lastUpdate, String lastUpdatedBy, int customerID, int userID, int contactID) throws SQLException {
         String sql = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -296,6 +296,7 @@ public class AppointmentQuery {
         labelPickYear.setVisible(false);
         pickMonth.setVisible(false);
         pickYear.setVisible(false);
+        getData();
         if (login_screen.isEnglish()) {
             labelPlace.setText("All Appointments");
         }
@@ -314,6 +315,7 @@ public class AppointmentQuery {
         labelPickYear.setVisible(true);
         pickMonth.setVisible(true);
         pickYear.setVisible(true);
+        getDataMonthly();
         if (login_screen.isEnglish()) {
             labelPlace.setText("Monthly Appointments");
         }
@@ -334,6 +336,7 @@ public class AppointmentQuery {
         labelPickMonth.setVisible(false);
         pickYear.setVisible(false);
         pickMonth.setVisible(false);
+        getDataWeekly();
         //TODO: set visibility of week things
         if (login_screen.isEnglish()) {
             labelPlace.setText("Weekly Appointments");
@@ -342,7 +345,9 @@ public class AppointmentQuery {
             labelPlace.setText("Rendez-vous hebdomadaires");
         }
     }
-    //TODO: determine if 1 refresh button doing all 3 tables is better, or 1 refresh button for each.
+    //TODO future: refreshTable does all 3.
+    // Can make more buttons and refresh methods to only refresh the currently selected view and save on extra queries.
+    // Stack the buttons on top of the others and hide/show where needed.
     public void getData() {
         try {
             ObservableList<ObservableList> data = FXCollections.observableArrayList();
@@ -468,10 +473,7 @@ public class AppointmentQuery {
         pickYear.setItems(years);
         pickMonth.setValue(LocalDate.now().getMonthValue());
         pickYear.setValue(Year.now().getValue());
-
         getData();
-        getDataMonthly();
-        getDataWeekly();
 
         if (!login_screen.isEnglish()){
             //TODO: labelnav is too long in french, fix.
