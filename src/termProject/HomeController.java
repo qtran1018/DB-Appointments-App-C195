@@ -13,7 +13,6 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import javax.swing.*;
-import javax.xml.transform.Result;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

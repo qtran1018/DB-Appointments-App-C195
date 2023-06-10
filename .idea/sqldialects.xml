@@ -3,6 +3,8 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/src/termProject/AppointmentQuery.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/termProject/CustomerQuery.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/termProject/HomeController.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/termProject/login_screen.java" dialect="GenericSQL" />
+    <file url="PROJECT" dialect="GenericSQL" />
   </component>
 </project>
