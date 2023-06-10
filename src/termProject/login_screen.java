@@ -166,8 +166,7 @@ public class login_screen extends Application implements Initializable {
     public void setStuff() {
         login_location.setText(myCountry);
         languageIsEnglish = getLanguage.equals("English");
-        if (login_screen.isEnglish()) {/*Do nothing*/}
-        else {
+        if (!login_screen.isEnglish()){
             labelBigLogin.setText("Bienvenu!");
             username_field.setPromptText("Nom d'utilisateur");
             password_field.setPromptText("Mot de passe");

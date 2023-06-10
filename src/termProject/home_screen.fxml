@@ -7,63 +7,79 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0"
-      prefWidth="1280.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="termProject.HomeController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="termProject.HomeController">
     <AnchorPane prefHeight="720.0" prefWidth="1280.0">
         <SplitPane dividerPositions="0.1643192488262911" prefHeight="720.0" prefWidth="1280.0">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="718.0" prefWidth="676.0">
-                <SplitPane dividerPositions="0.09776536312849161" orientation="VERTICAL"
-                           prefHeight="718.0" prefWidth="253.0" AnchorPane.bottomAnchor="0.0"
-                           AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                           AnchorPane.topAnchor="0.0">
+                <SplitPane dividerPositions="0.09776536312849161" orientation="VERTICAL" prefHeight="718.0" prefWidth="253.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="251.0">
-                        <Label fx:id="labelNav" layoutX="24.0" layoutY="6.0" prefHeight="56.0"
-                               prefWidth="145.0" text="Navigation">
+                        <Label fx:id="labelNav" layoutX="24.0" layoutY="6.0" prefHeight="56.0" prefWidth="145.0" text="Navigation">
                             <font>
-                                <Font size="30.0"/>
+                                <Font size="30.0" />
                             </font>
                         </Label>
                     </AnchorPane>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="80.0" prefWidth="232.0">
-                        <Button fx:id="btnHome" layoutX="18.0" layoutY="14.0"
-                                mnemonicParsing="false" prefHeight="35.0" prefWidth="123.0"
-                                text="Home">
+                        <Button fx:id="btnHome" layoutX="18.0" layoutY="14.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="123.0" text="Home">
                             <font>
-                                <Font size="16.0"/>
+                                <Font size="16.0" />
                             </font>
                         </Button>
-                        <Label fx:id="labelTables" layoutX="18.0" layoutY="68.0" prefHeight="27.0"
-                               prefWidth="60.0" text="Tables">
+                        <Label fx:id="labelTables" layoutX="18.0" layoutY="68.0" prefHeight="27.0" prefWidth="60.0" text="Tables">
                             <font>
-                                <Font size="18.0"/>
+                                <Font size="18.0" />
                             </font>
                         </Label>
-                        <Button fx:id="btnCustomers" layoutX="18.0" layoutY="99.0"
-                                mnemonicParsing="false" onAction="#customersClick" prefHeight="35.0"
-                                prefWidth="123.0" text="Customers">
+                        <Button fx:id="btnCustomers" layoutX="18.0" layoutY="99.0" mnemonicParsing="false" onAction="#customersClick" prefHeight="35.0" prefWidth="123.0" text="Customers">
                             <font>
-                                <Font size="16.0"/>
+                                <Font size="16.0" />
                             </font>
                         </Button>
-                        <Button fx:id="btnAppointments" layoutX="18.0" layoutY="148.0"
-                                mnemonicParsing="false" onAction="#appointmentsClick" prefHeight="35.0" prefWidth="123.0"
-                                text="Appointments">
+                        <Button fx:id="btnAppointments" layoutX="18.0" layoutY="148.0" mnemonicParsing="false" onAction="#appointmentsClick" prefHeight="35.0" prefWidth="123.0" text="Appointments">
                             <font>
-                                <Font size="16.0"/>
+                                <Font size="16.0" />
                             </font>
                         </Button>
-                        <Button fx:id="btnLogout" layoutX="14.0" layoutY="604.0"
-                                mnemonicParsing="false" onAction="#logoutClick" text="Logout"/>
+                        <Button fx:id="btnLogout" layoutX="14.0" layoutY="604.0" mnemonicParsing="false" onAction="#logoutClick" text="Logout" />
                     </AnchorPane>
                 </SplitPane>
             </AnchorPane>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="718.0" prefWidth="367.0">
                 <Label fx:id="labelPage" layoutX="35.0" layoutY="31.0" text="Home Page">
                     <font>
-                        <Font size="24.0"/>
+                        <Font size="24.0" />
                     </font>
                 </Label>
+            <Label fx:id="labeJan" layoutX="21.0" layoutY="97.0" text="Jan" />
+            <Label layoutX="21.0" layoutY="73.0" text="Appointments by Month" />
+            <Label fx:id="labelFeb" layoutX="21.0" layoutY="123.0" text="Feb" />
+            <Label fx:id="labelMar" layoutX="21.0" layoutY="147.0" text="Mar" />
+            <Label fx:id="labelApr" layoutX="21.0" layoutY="171.0" text="Apr" />
+            <Label fx:id="labelMay" layoutX="21.0" layoutY="196.0" text="May" />
+            <Label fx:id="labeJun" layoutX="21.0" layoutY="221.0" text="Jun" />
+            <Label fx:id="labelJul" layoutX="21.0" layoutY="246.0" text="Jul" />
+            <Label fx:id="labelAug" layoutX="21.0" layoutY="270.0" text="Aug" />
+            <Label fx:id="labelSep" layoutX="21.0" layoutY="294.0" text="Sep" />
+            <Label fx:id="labelOct" layoutX="21.0" layoutY="318.0" text="Oct" />
+            <Label fx:id="labelNov" layoutX="21.0" layoutY="342.0" text="Nov" />
+            <Label fx:id="labelDec" layoutX="21.0" layoutY="366.0" text="Dec" />
+            <Label layoutX="59.0" layoutY="97.0" text="0" />
+            <Label layoutX="59.0" layoutY="123.0" text="0" />
+            <Label layoutX="59.0" layoutY="147.0" text="0" />
+            <Label layoutX="59.0" layoutY="171.0" text="0" />
+            <Label layoutX="59.0" layoutY="196.0" text="0" />
+            <Label layoutX="59.0" layoutY="221.0" text="0" />
+            <Label layoutX="59.0" layoutY="246.0" text="0" />
+            <Label layoutX="59.0" layoutY="270.0" text="0" />
+            <Label layoutX="59.0" layoutY="294.0" text="0" />
+            <Label layoutX="59.0" layoutY="318.0" text="0" />
+            <Label layoutX="59.0" layoutY="342.0" text="0" />
+            <Label layoutX="59.0" layoutY="366.0" text="0" />
+            <Label fx:id="labelPage1" layoutX="471.0" layoutY="31.0" text="Reports">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
             </AnchorPane>
         </SplitPane>
     </AnchorPane>

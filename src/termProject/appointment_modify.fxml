@@ -36,15 +36,31 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
+            <TextField fx:id="appointmentIDField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="appointmentTitleField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="appointmentDescField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <TextField fx:id="appointmentLocField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Label fx:id="labelTitle" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Title" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+         <TextField fx:id="appointmentTypeField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+         <DatePicker fx:id="appointmentStartDate" prefHeight="25.0" prefWidth="230.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+         <DatePicker fx:id="appointmentEndDate" prefHeight="25.0" prefWidth="263.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+         <ComboBox fx:id="appointmentStartTime" prefHeight="25.0" prefWidth="233.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+         <ComboBox fx:id="appointmentEndTime" prefHeight="25.0" prefWidth="193.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <TextField fx:id="appointmentCustomerID" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+         <TextField fx:id="appointmentUserID" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+         <ComboBox fx:id="appointmentContact" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+            <Button fx:id="saveAppointment" mnemonicParsing="false" onAction="#appointmentSave" prefHeight="25.0" prefWidth="95.0" text="Save" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="13" />
+            <Button fx:id="btnCancel" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#appointmentCancel" prefHeight="25.0" prefWidth="95.0" text="Cancel" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="13" />
+            <Label fx:id="labelAppointment" alignment="CENTER" contentDisplay="CENTER" prefHeight="103.0" prefWidth="288.0" text="Appointment">
+                <font>
+                    <Font size="24.0" />
+                </font>
+            </Label>
+            <Label fx:id="labelAppointmentID" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Appointment ID" GridPane.rowIndex="1">
                 <font>
                     <Font size="14.0" />
                 </font>
             </Label>
-            <Label fx:id="labelType" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Type" GridPane.rowIndex="5">
+            <Label fx:id="labelTitle" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Title" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                 <font>
                     <Font size="14.0" />
                 </font>
@@ -59,47 +75,21 @@
                     <Font size="14.0" />
                 </font>
             </Label>
+            <Label fx:id="labelType" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Type" GridPane.rowIndex="5">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
             <Label fx:id="labelStartDate" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Start Date" GridPane.rowIndex="6">
                 <font>
                     <Font size="14.0" />
                 </font>
             </Label>
-            <Label fx:id="labelCustomerID" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Customer ID" GridPane.rowIndex="10">
-                <font>
-                    <Font size="14.0" />
-                </font>
-            </Label>
-            <TextField fx:id="appointmentCustomerID" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-            <Label fx:id="labelAppointment" alignment="CENTER" contentDisplay="CENTER" prefHeight="103.0" prefWidth="288.0" text="Appointment">
-                <font>
-                    <Font size="24.0" />
-                </font>
-            </Label>
-            <Button fx:id="saveAppointment" mnemonicParsing="false" onAction="#appointmentSave" prefHeight="25.0" prefWidth="95.0" text="Save" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="13" />
-            <Button fx:id="btnCancel" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#appointmentCancel" prefHeight="25.0" prefWidth="95.0" text="Cancel" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="13" />
-            <Label fx:id="labelAppointmentID" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Appointment ID" GridPane.rowIndex="1">
-                <font>
-                    <Font size="14.0" />
-                </font>
-            </Label>
-            <TextField fx:id="appointmentIDField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-         <TextField fx:id="appointmentTypeField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-         <Label fx:id="labelUserID" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="User ID" GridPane.rowIndex="11">
-            <font>
-               <Font size="14.0" />
-            </font>
-         </Label>
-         <Label fx:id="labelContact" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Contact" GridPane.rowIndex="12">
-            <font>
-               <Font size="14.0" />
-            </font>
-         </Label>
          <Label fx:id="labelEndDate" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="End Date" GridPane.rowIndex="7">
             <font>
                <Font size="14.0" />
             </font>
          </Label>
-         <DatePicker fx:id="appointmentStartDate" prefHeight="25.0" prefWidth="230.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
          <Label fx:id="labelStartTime" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Start Time" GridPane.rowIndex="8">
             <font>
                <Font size="14.0" />
@@ -110,11 +100,21 @@
                <Font size="14.0" />
             </font>
          </Label>
-         <ComboBox fx:id="appointmentStartTime" prefHeight="25.0" prefWidth="233.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-         <ComboBox fx:id="appointmentEndTime" prefHeight="25.0" prefWidth="193.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-         <DatePicker fx:id="appointmentEndDate" prefHeight="25.0" prefWidth="263.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-         <TextField fx:id="appointmentUserID" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-         <ComboBox fx:id="appointmentContact" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+            <Label fx:id="labelCustomerID" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Customer ID" GridPane.rowIndex="10">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+         <Label fx:id="labelUserID" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="User ID" GridPane.rowIndex="11">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Label>
+         <Label fx:id="labelContact" alignment="CENTER" prefHeight="60.0" prefWidth="192.0" text="Contact" GridPane.rowIndex="12">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Label>
         </GridPane>
     </VBox>
 </AnchorPane>
