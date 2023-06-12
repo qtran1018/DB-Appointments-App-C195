@@ -63,7 +63,6 @@ public class modifyAppointmentController {
      * Checks if data fields are empty.
      * Then checks against business hours, if it is OUT of business hours, with a concatenation of date and time fields as parameters for the starting and ending date-times.
      * Lastly gets all field data and inserts into INSERT SQL statement after formatting dates and times.
-     * @throws SQLException
      */
     @FXML
     public void appointmentSave() throws SQLException {
