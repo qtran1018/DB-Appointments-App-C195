@@ -110,27 +110,42 @@ public class modifyCustomerController {
 
     @FXML
     public void customerSave() throws SQLException {
-        int customerID = Integer.parseInt(customerIDField.getText());
-        String customerName = customerNameField.getText();
-        String customerAddress = customerAddressField.getText();
-        String customerPostal = customerPostalField.getText();
-        String customerState = customerStateField.getValue();
-        int customerDivisionID = CustomerQuery.selectDivisionID(customerState);
-        String customerPhone = customerPhoneField.getText();
-        //Formats in UTC time like this : 2023-05-31 06:52:35
-        String customerLastUpdate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString().replaceAll("[TZ]"," ");
-        String customerLastUpdatedBy = login_screen.getUsername();
-
-        CustomerQuery.customerUpdate(customerName,customerAddress, customerPostal, customerPhone, customerLastUpdate, customerLastUpdatedBy, customerDivisionID, customerID);
-        if (login_screen.isEnglish()){
-            showMessageDialog(null,"Customer information updated.");
-        }
+        if (customerNameField.getText().isEmpty() ||
+            customerAddressField.getText().isEmpty() ||
+            customerPhoneField.getText().isEmpty() ||
+            customerCountryField.getValue().isEmpty() ||
+            customerStateField.getValue().isEmpty() ||
+            customerPostalField.getText().isEmpty())
+            {
+                if (login_screen.isEnglish()){
+                    showMessageDialog(null,"Error: All fields are required.");
+                }
+                else {
+                    showMessageDialog(null,"Erreur: Tous les champs sont obligatoires.");
+                }
+            }
         else {
-            showMessageDialog(null,"Informations client mises à jour.");
-        }
+            int customerID = Integer.parseInt(customerIDField.getText());
+            String customerName = customerNameField.getText();
+            String customerAddress = customerAddressField.getText();
+            String customerPostal = customerPostalField.getText();
+            String customerState = customerStateField.getValue();
+            int customerDivisionID = CustomerQuery.selectDivisionID(customerState);
+            String customerPhone = customerPhoneField.getText();
+            //Formats in UTC time like this : 2023-05-31 06:52:35
+            String customerLastUpdate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString().replaceAll("[TZ]", " ");
+            String customerLastUpdatedBy = login_screen.getUsername();
 
-        Stage closeModify = (Stage) btnCancel.getScene().getWindow();
-        closeModify.close();
+            CustomerQuery.customerUpdate(customerName, customerAddress, customerPostal, customerPhone, customerLastUpdate, customerLastUpdatedBy, customerDivisionID, customerID);
+            if (login_screen.isEnglish()) {
+                showMessageDialog(null, "Customer information updated.");
+            } else {
+                showMessageDialog(null, "Informations client mises à jour.");
+            }
+
+            Stage closeModify = (Stage) btnCancel.getScene().getWindow();
+            closeModify.close();
+        }
     }
 
     public void initCustomerData(String[] selectedArr) throws SQLException {

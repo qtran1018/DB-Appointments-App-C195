@@ -109,37 +109,50 @@ public class addCustomerController {
     }
     @FXML
     public void customerSave() throws SQLException, IOException {
-        String customerName = customerNameField.getText();
-        String customerAddress = customerAddressField.getText();
-        String customerPostal = customerPostalField.getText();
-        //TODO: set it when I make the combo boxes.
-        //String customerCountry = customerCountryField.getValue();
-        String customerState = customerStateField.getValue();
-        int customerDivisionID = CustomerQuery.selectDivisionID(customerState);
-        String customerPhone = customerPhoneField.getText();
-        //Formats in UTC time like this : 2023-05-31 06:52:35
-        String customerCreateDate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString().replaceAll("[TZ]"," ");
-        //String customerLastUpdate = customerCreateDate;
-        String customerCreatedBy = login_screen.getUsername();
-        //String customerLastUpdatedBy = login_screen.getUsername();
-
-        //Doubles up on create-date and update-date, created-by and updated-by, since they will be the same.
-        CustomerQuery.customerInsert(customerName, customerAddress, customerPostal, customerPhone, customerCreateDate, customerCreatedBy, customerCreateDate, customerCreatedBy, customerDivisionID);
-        if (login_screen.isEnglish()){
-            showMessageDialog(null,"Customer added.");
+        if (customerNameField.getText().isEmpty() ||
+                customerAddressField.getText().isEmpty() ||
+                customerPhoneField.getText().isEmpty() ||
+                customerCountryField.getValue().isEmpty() ||
+                customerStateField.getValue().isEmpty() ||
+                customerPostalField.getText().isEmpty()) {
+            if (login_screen.isEnglish()) {
+                showMessageDialog(null, "Error: All fields are required.");
+            } else {
+                showMessageDialog(null, "Erreur: Tous les champs sont obligatoires.");
+            }
         }
         else {
-            showMessageDialog(null,"Client ajouté.");
+            String customerName = customerNameField.getText();
+            String customerAddress = customerAddressField.getText();
+            String customerPostal = customerPostalField.getText();
+            //TODO: set it when I make the combo boxes.
+            //String customerCountry = customerCountryField.getValue();
+            String customerState = customerStateField.getValue();
+            int customerDivisionID = CustomerQuery.selectDivisionID(customerState);
+            String customerPhone = customerPhoneField.getText();
+            //Formats in UTC time like this : 2023-05-31 06:52:35
+            String customerCreateDate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString().replaceAll("[TZ]", " ");
+            //String customerLastUpdate = customerCreateDate;
+            String customerCreatedBy = login_screen.getUsername();
+            //String customerLastUpdatedBy = login_screen.getUsername();
+
+            //Doubles up on create-date and update-date, created-by and updated-by, since they will be the same.
+            CustomerQuery.customerInsert(customerName, customerAddress, customerPostal, customerPhone, customerCreateDate, customerCreatedBy, customerCreateDate, customerCreatedBy, customerDivisionID);
+            if (login_screen.isEnglish()) {
+                showMessageDialog(null, "Customer added.");
+            } else {
+                showMessageDialog(null, "Client ajouté.");
+            }
+
+            //TODO: somehow refresh the table.
+            FXMLLoader customerLoader = new FXMLLoader(getClass().getResource("customers_screen.fxml"));
+            customerLoader.load();
+            CustomerQuery controller = customerLoader.getController();
+            controller.refreshTable();
+
+            Stage addCustomer = (Stage) btnCancel.getScene().getWindow();
+            addCustomer.close();
         }
-
-        //TODO: somehow refresh the table.
-        FXMLLoader customerLoader = new FXMLLoader(getClass().getResource("customers_screen.fxml"));
-        customerLoader.load();
-        CustomerQuery controller = customerLoader.getController();
-        controller.refreshTable();
-
-        Stage addCustomer = (Stage) btnCancel.getScene().getWindow();
-        addCustomer.close();
     }
     @FXML
     void initialize() {
