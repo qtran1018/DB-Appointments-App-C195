@@ -257,10 +257,7 @@ public class AppointmentQuery {
 
         //2023-06-12 09:00:00 -- formatted datetime
 
-        if(Integer.parseInt(estFormattedStart.substring(11,13)) < 8 || Integer.parseInt(estFormattedStart.substring(11,13)) > 22 || Integer.parseInt(estFormattedEnd.substring(11,13)) < 8 || Integer.parseInt(estFormattedEnd.substring(11,13)) > 22) {
-            return true;
-        }
-            return false;
+        return Integer.parseInt(estFormattedStart.substring(11, 13)) < 8 || Integer.parseInt(estFormattedStart.substring(11, 13)) > 22 || Integer.parseInt(estFormattedEnd.substring(11, 13)) < 8 || Integer.parseInt(estFormattedEnd.substring(11, 13)) > 22;
     }
 
     /**

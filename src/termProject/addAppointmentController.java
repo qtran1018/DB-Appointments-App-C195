@@ -14,6 +14,9 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 public class addAppointmentController {
 
+    /**
+     * Variables for FXML controllers.
+     */
     //<editor-fold desc="Variables folded">
     public Button saveAppointment;
     public TextField appointmentTitleField;
@@ -46,11 +49,18 @@ public class addAppointmentController {
     private Button btnCancel;
     //</editor-fold
 
+    /**
+     * Observable lists of the possible appointment times and contacts as defined by the database.
+     */
     //<editor-fold desc="ComboBox lists folded">
     final ObservableList<String> times = FXCollections.observableArrayList("00:00", "01:00", "02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","21:00","22:00","23:00");
     ObservableList<String> contacts = FXCollections.observableArrayList();
 
     //</editor-fold
+
+    /**
+     * Exits the appointment-add window without saving any changes.
+     */
     @FXML
     public void appointmentCancel() {
         Stage appointmentAddStage = (Stage) btnCancel.getScene().getWindow();
@@ -135,6 +145,10 @@ public class addAppointmentController {
             addAppointment.close();
         }
     }
+
+    /**
+     * Sets the observable list values for the combo boxes.
+     */
     @FXML
     void initialize() throws SQLException {
         appointmentIDField.setDisable(true);

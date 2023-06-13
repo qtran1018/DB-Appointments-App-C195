@@ -72,7 +72,6 @@ public class HomeController {
     /**
      * Executes a query for a ResulSet for appointments, grouped by month.
      * @return returns the ResultSet to be used by other functions.
-     * @throws SQLException
      */
     public static ResultSet getAppointmentByMonth() throws SQLException {
         String sql = "SELECT MONTHNAME(Start) as Month, Type, COUNT(*) as Count FROM appointments GROUP BY Month, Type ORDER BY Month ASC";

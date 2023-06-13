@@ -13,7 +13,9 @@ import java.time.temporal.ChronoUnit;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class modifyAppointmentController {
-
+    /**
+     * Variables for FXML controllers and those used to modify the information.
+     */
     //<editor-fold desc="Variables folded">
     public Button saveAppointment;
     public TextField appointmentTitleField;
@@ -47,16 +49,31 @@ public class modifyAppointmentController {
     public ResultSet rs;
     //</editor-fold
 
+    /**
+     * Observable lists of the possible appointment times and contacts as defined by the database.
+     */
     //<editor-fold desc="ComboBox lists folded">
     final ObservableList<String> times = FXCollections.observableArrayList("00:00", "01:00", "02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","21:00","22:00","23:00");
     ObservableList<String> contacts = FXCollections.observableArrayList();
     //</editor-fold
+
+    /**
+     * Exits the appointment-add window without saving any changes.
+     */
     @FXML
     public void appointmentCancel() {
         Stage appointmentAddStage = (Stage) btnCancel.getScene().getWindow();
         //Closes current window
         appointmentAddStage.close();
     }
+    /**
+     * Appointment Save function.
+     * First checks for DISQUALIFYING information.
+     * Checks if data fields are empty.
+     * Then checks against business hours, if it is OUT of business hours, with a concatenation of date and time fields as parameters for the starting and ending date-times.
+     * Lastly gets all field data and inserts into INSERT SQL statement after formatting dates and times.
+     */
+
     /**
      * Appointment Save function.
      * First checks for DISQUALIFYING information.
@@ -136,6 +153,11 @@ public class modifyAppointmentController {
         }
     }
 
+    /**
+     * Function that allows data from the tableview in AppointmentQuery to be accessed by the modify-class.
+     * Takes in an array and then assigns variables the values of its corresponding location in the array.
+     * @param selectedArr the Array that is taken from the tableview, which contains the data of the appointment being modified.
+     */
     public void initAppointmentData(String[] selectedArr) throws SQLException {
         this.selectedArr = selectedArr;
 
@@ -195,6 +217,11 @@ public class modifyAppointmentController {
 
 
     }
+
+    /**
+     * At the start of loading the modify screen, queries for a result list of contacts in the database, then adds each result in the set to the contact list.
+     * Sets the observable lists to the combo boxes.
+     */
     @FXML
     void initialize() throws SQLException {
         appointmentIDField.setDisable(true);
