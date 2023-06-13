@@ -15,6 +15,9 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 public class modifyCustomerController {
 
+    /**
+     * Variables for FXML controllers and tableview selections.
+     */
     //<editor-fold desc="Variables folded">
     public Button saveCustomer;
     public Label labelName;
@@ -101,6 +104,9 @@ public class modifyCustomerController {
     final ObservableList<String> caStates = FXCollections.observableArrayList("Northwestern Territories","Alberta","British Columbia","Manitoba","New Brunswick","Nova Scotia","Prince Edward Island","Ontario","Québec","Saskatchewan","Nunavut","Yukon","Newfoundland and Labrador");
     //</editor-fold
 
+    /**
+     * Closes the window without saving any changes.
+     */
     @FXML
     public void customerCancel() {
         Stage customerAddStage = (Stage) btnCancel.getScene().getWindow();
@@ -108,6 +114,13 @@ public class modifyCustomerController {
         customerAddStage.close();
     }
 
+    /**
+     * This method saves the data in the fields into a record for the DB.
+     * First it checks for failure; all fields are checked for empty values.
+     * If any are empty, displays a message noting all fields are required.
+     * If all is good, assigns the info of each field to a variable, and then pass those variables to the customer INSERT method.
+     * Closes the scene window on completion.
+     */
     @FXML
     public void customerSave() throws SQLException {
         if (customerNameField.getText().isEmpty() ||
@@ -148,6 +161,11 @@ public class modifyCustomerController {
         }
     }
 
+    /**
+     * Function that allows data from the tableview in CustomerQuery to be accessed by the modify-class.
+     * Takes in an array and then assigns variables the values of its corresponding location in the array.
+     * @param selectedArr the Array that is taken from the tableview, which contains the data of the customer being modified.
+     */
     public void initCustomerData(String[] selectedArr) throws SQLException {
         this.selectedArr = selectedArr;
 
@@ -173,6 +191,10 @@ public class modifyCustomerController {
         customerCountryField.setValue(customerCountry);
 
     }
+    /**
+     * Set the combobox options to the respective observable lists.
+     * Changes the list of STATEs dependent on the Country selection.
+     */
     @FXML
     void initialize() {
         customerIDField.setDisable(true);

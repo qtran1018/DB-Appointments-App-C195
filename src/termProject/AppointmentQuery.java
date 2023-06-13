@@ -17,14 +17,17 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.Year;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class AppointmentQuery {
 
+    /**
+     * Variables for FXML controllers, tableview for customer data, and for selecting an item from the tableview.
+     */
     //<editor-fold desc="Variables folded">
     public Label labelNav;
     public Label labelTables;
@@ -54,8 +57,32 @@ public class AppointmentQuery {
     String[] selectedArr;
     Object selectedItem;
     //</editor-fold
+
+    /**
+     * Observable lists of months and years.
+     * Years to be added during initialize.
+     */
+    //<editor-fold desc="Lists folded">
     final ObservableList<Integer> months = FXCollections.observableArrayList(1,2,3,4,5,6,7,8,9,10,11,12);
     public ObservableList<Integer> years = FXCollections.observableArrayList();
+    //</editor-fold
+
+    /**
+     * Takes in parameters and passes them into an SQL query to insert appointment information.
+     * @param title appointment title
+     * @param description appointment description
+     * @param location appointment location
+     * @param type appointment type
+     * @param start appointment start timedate
+     * @param end appointment end timedate
+     * @param createDate appointment create date
+     * @param createdBy appointment creater
+     * @param lastUpdate appointment update date
+     * @param lastUpdatedBy appointment updater user
+     * @param customerID customer ID of the appointment's customer
+     * @param userID appointment user's ID
+     * @param contactID appointment contact's ID
+     */
     public static void appointmentInsert(String title, String description, String location, String type, String start, String end, String createDate, String createdBy, String lastUpdate, String lastUpdatedBy, int customerID, int userID, int contactID) throws SQLException {
         String sql = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -74,6 +101,10 @@ public class AppointmentQuery {
         ps.setInt(13, contactID);
         ps.executeUpdate();
     }
+
+    /**
+     * Takes in a list of parameters and passes to a query that updates the existing appointment based on Appointment ID.
+     */
     public static void appointmentUpdate(String title, String description, String location, String type, String start, String end, String lastUpdate, String lastUpdatedBy, int customerID, int userID, int contactID, int appointmentID) throws SQLException {
         String sql = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, Last_Update = ?, Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ? WHERE Appointment_ID = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -91,17 +122,34 @@ public class AppointmentQuery {
         ps.setInt(12, appointmentID);
         ps.executeUpdate();
     }
+
+    /**
+     * Deletes appointment from DB based on appointment ID.
+     * @param appointmentID ID of appointment to be deleted
+     */
     public static void appointmentDelete(int appointmentID) throws SQLException {
         String sql = "DELETE FROM appointments WHERE Appointment_ID = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setInt(1, appointmentID);
         ps.executeUpdate();
     }
+
+    /**
+     * Returns the full result set of a query on the appointments table.
+     * @return returns result set
+     */
     public static ResultSet select() throws SQLException {
         String sql = "SELECT * FROM appointments";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         return ps.executeQuery();
     }
+
+    /**
+     * Takes in 2 parameters and queries for appointments with those as the date start.
+     * @param month user selected month
+     * @param year user selected year
+     * @return a result set of the month and year selected, of appointments.
+     */
     public static ResultSet selectMonthly(int month, int year) throws SQLException{
         String sql = "SELECT * FROM appointments WHERE MONTH(Start) = ? AND YEAR(Start) = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -109,11 +157,22 @@ public class AppointmentQuery {
         ps.setInt(2,year);
         return ps.executeQuery();
     }
+
+    /**
+     * Returns a result set based on the current week.
+     * @return a result of the appointments in the current week.
+     */
     private static ResultSet selectWeekly() throws SQLException {
         String sql = "SELECT * FROM appointments WHERE YEARWEEK(`Start`, 1) = YEARWEEK(CURDATE(), 1)";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         return ps.executeQuery();
     }
+
+    /**
+     * Gets the contact ID of the contact as part of the appointment.
+     * @param contactName name of the contact selected in the combobox
+     * @return return the ID of the selected contact
+     */
     public static int selectContactID(String contactName) throws SQLException {
         String sql = "SELECT Contact_ID FROM contacts WHERE Contact_Name = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -125,6 +184,12 @@ public class AppointmentQuery {
         }
         return contactID;
     }
+
+    /**
+     * To Modify an appointment, this function is used to query the name from an ID.
+     * @param contactID ID of the contact selected.
+     * @return returns a String of the contact's name.
+     */
     public static String selectContactName (int contactID) throws SQLException {
         String sql = "SELECT Contact_Name FROM contacts WHERE Contact_ID = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -136,6 +201,12 @@ public class AppointmentQuery {
         }
         return contactName;
     }
+
+    /**
+     * Assigns the user of the appointment to the currently logged-in user.
+     * Gets a result set and gets the only result.
+     * @return returns integer ID of the logged in user.
+     */
     public static int selectUser() throws SQLException {
         String sql = "SELECT User_ID FROM users User_ID WHERE User_Name = ?";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -148,12 +219,53 @@ public class AppointmentQuery {
         }
         return userID;
     }
+
+    /**
+     * Gets contact names from the DB.
+     * @return returns a result set of all names from the contact table.
+     */
     public static ResultSet getContactList() throws SQLException {
         String sql = "SELECT Contact_Name FROM contacts";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         return ps.executeQuery();
     }
 //-----------------------------------------------------------------------------------------------
+
+    /**
+     * Determines if an appointment's start and end time are in business hours.
+     * @param dateTimeStart appointment start datetime
+     * @param dateTimeEnd appointment end datetime
+     * @return true if the times are out of business hours, false if within.
+     */
+    public static boolean isOutOfHours(String dateTimeStart, String dateTimeEnd) {
+        //Ids and formats
+        String DATE_FORMAT = "yyyy-MM-dd HH:mm";
+        DateTimeFormatter format = DateTimeFormatter.ofPattern(DATE_FORMAT);
+        ZoneId estZoneId = ZoneId.of("America/New_York");
+
+        // START: LDT (ldt parse string in format) --> System DT atZone(zoneID) --> Target DT .withZoneSameInstant(zoneID) --> String of ZDT in format
+        LocalDateTime ldtStart = LocalDateTime.parse(dateTimeStart, format);
+        ZonedDateTime estZdtStart = ldtStart.atZone(ZoneId.systemDefault()).withZoneSameInstant(estZoneId);
+        String estFormattedStart  = format.format(estZdtStart);
+        //Weekend is part of business hours, not needed --> String startDay = estZdtStart.getDayOfWeek().toString();
+
+        // END: same as Start
+        LocalDateTime ldtEnd = LocalDateTime.parse(dateTimeEnd, format);
+        ZonedDateTime estZdtEnd = ldtEnd.atZone(ZoneId.systemDefault()).withZoneSameInstant(estZoneId);
+        String estFormattedEnd  = format.format(estZdtEnd);
+        //Weekend is part of business hours, not needed --> String endDay = estZdtEnd.getDayOfWeek().toString();
+
+        //2023-06-12 09:00:00 -- formatted datetime
+
+        if(Integer.parseInt(estFormattedStart.substring(11,13)) < 8 || Integer.parseInt(estFormattedStart.substring(11,13)) > 22 || Integer.parseInt(estFormattedEnd.substring(11,13)) < 8 || Integer.parseInt(estFormattedEnd.substring(11,13)) > 22) {
+            return true;
+        }
+            return false;
+    }
+
+    /**
+     * Loads the scene to add appointments.
+     */
     public void appointmentAddClick() throws IOException {
         FXMLLoader partLoader = new FXMLLoader(getClass().getResource("appointment_add.fxml"));
         Parent partRoot = partLoader.load();
@@ -161,10 +273,14 @@ public class AppointmentQuery {
         partStage.setScene(new Scene(partRoot));
         partStage.show();
     }
+
+    /**
+     * Loads the scene to modify appointments based on the tableview selected item.
+     * Uses initAppointmentData to "move" data into the other class to be prefilled with the selected data.
+     */
     public void appointmentModifyClick() {
         try {
         selectedItem = appointmentsTable.getSelectionModel().getSelectedItem();
-        System.out.println(selectedItem.toString());
         if (selectedItem != null){
             String selectedString = selectedItem.toString();
             selectedString = selectedString.substring(1,selectedString.length()-1);
@@ -200,6 +316,10 @@ public class AppointmentQuery {
             }
         }
     }
+
+    /**
+     * Deletes an appointment based on appointment ID.
+     */
     public void appointmentDeleteClick() {
         try {
             selectedItem = appointmentsTable.getSelectionModel().getSelectedItem();
@@ -254,6 +374,11 @@ public class AppointmentQuery {
 
         }
     }
+
+    /**
+     * Takes a string parameter and opens the FXML of that name into a new scene window.
+     * @param screenName filename of the FXML file being loaded.
+     */
     public void loadScreen(String screenName) throws IOException {
         FXMLLoader screenLoader = new FXMLLoader(login_screen.class.getResource(screenName));
         Parent screenRoot = screenLoader.load();
@@ -265,6 +390,11 @@ public class AppointmentQuery {
         Stage closeStage = (Stage) btnHome.getScene().getWindow();
         closeStage.close();
     }
+
+    /**
+     * Logs the user out by loading into the login screen.
+     * Assigns login_screen's loggedUser to null.
+     */
     public void logoutClick() throws IOException {
         int confirmBtn = JOptionPane.YES_NO_OPTION;
         int resultBtn;
@@ -279,12 +409,25 @@ public class AppointmentQuery {
             loadScreen("login_screen.fxml");
         }
     }
+
+    /**
+     * Loads the home screen scene window using its fxml file.
+     */
     public void homeClick() throws IOException {
         loadScreen("home_screen.fxml");
     }
+    /**
+     * Loads the customers scene window using its fxml file.
+     */
     public void customersClick() throws IOException {
         loadScreen("customers_screen.fxml");
     }
+
+    /**
+     * Linked to the All-TABLES radio button.
+     * Hides all tableview and elements not related to showing ALL appointment data.
+     * Gets the data again to refresh the table.
+     */
     public void setRadioAll(){
         radioAll.setSelected(true);
         radioMonthly.setSelected(false);
@@ -304,6 +447,12 @@ public class AppointmentQuery {
             labelPlace.setText("Tous les rendez-vous");
         }
     }
+
+    /**
+     * Linked to the monthly radio button.
+     * Hides all tableview and elements not related to showing monthly appointment data.
+     * Gets the data again to refresh the table.
+     */
     public void setRadioMonthly(){
         radioAll.setSelected(false);
         radioMonthly.setSelected(true);
@@ -325,6 +474,12 @@ public class AppointmentQuery {
             labelPickYear.setText("Année");
         }
     }
+
+    /**
+     * Linked to the weekly radio button.
+     * Hides all tableview and elements not related to showing weekly appointment data.
+     * Gets the data again to refresh the table.
+     */
     public void setRadioWeekly(){
         radioAll.setSelected(false);
         radioMonthly.setSelected(false);
@@ -348,6 +503,12 @@ public class AppointmentQuery {
     //TODO future: refreshTable does all 3.
     // Can make more buttons and refresh methods to only refresh the currently selected view and save on extra queries.
     // Stack the buttons on top of the others and hide/show where needed.
+
+    /**
+     * Gets data for all appointments.
+     * Dynamically creates the columns and fills them for appointments, based on the Result Set queried.
+     * Receives the data and then puts it into the observable list, then setting the Tableview with that list.
+     */
     public void getData() {
         try {
             ObservableList<ObservableList> data = FXCollections.observableArrayList();
@@ -383,6 +544,10 @@ public class AppointmentQuery {
             }
         }
     }
+
+    /**
+     * Variation of the getData function that queries for a result set based on month and year.
+     */
     public void getDataMonthly() {
         try {
             ObservableList<ObservableList> data = FXCollections.observableArrayList();
@@ -418,6 +583,10 @@ public class AppointmentQuery {
             }
         }
     }
+
+    /**
+     * Variation of the getData function that queries for a result set based on current week.
+     */
     public void getDataWeekly() {
         try {
             ObservableList<ObservableList> data = FXCollections.observableArrayList();
@@ -453,6 +622,10 @@ public class AppointmentQuery {
             }
         }
     }
+
+    /**
+     * Refreshes all tables by calling their version of the getData method.
+     */
     public void refreshTable(){
         System.out.println("before refresh");
         getData();
@@ -460,6 +633,10 @@ public class AppointmentQuery {
         getDataWeekly();
         System.out.println("after refresh");
     }
+
+    /**
+     * Defaults to settings to display all appointments.
+     */
     public void initialize() {
         setRadioAll();
         //Don't think I need to clear because it's a final list.

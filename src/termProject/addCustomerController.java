@@ -17,6 +17,9 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 public class addCustomerController {
 
+    /**
+     * Variables for FXML controllers
+     */
     //<editor-fold desc="Variables folded">
     public Button saveCustomer;
     public Label labelName;
@@ -45,6 +48,9 @@ public class addCustomerController {
     private Button btnCancel;
     //</editor-fold
 
+    /**
+     * Observable lists of countries and states.
+     */
     //<editor-fold desc="Country State lists folded">
     final ObservableList<String> countries = FXCollections.observableArrayList("U.S", "UK", "Canada");
     final ObservableList<String> usStates = FXCollections.observableArrayList(
@@ -101,12 +107,24 @@ public class addCustomerController {
     final ObservableList<String> ukStates = FXCollections.observableArrayList("England", "Scotland", "Wales", "Northern Ireland");
     final ObservableList<String> caStates = FXCollections.observableArrayList("Northwestern Territories","Alberta","British Columbia","Manitoba","New Brunswick","Nova Scotia","Prince Edward Island","Ontario","Québec","Saskatchewan","Nunavut","Yukon","Newfoundland and Labrador");
     //</editor-fold
+
+    /**
+     * Closes the window without saving any changes.
+     */
     @FXML
     public void customerCancel() {
         Stage customerAddStage = (Stage) btnCancel.getScene().getWindow();
         //Closes current window
         customerAddStage.close();
     }
+
+    /**
+     * This method saves the data in the fields into a record for the DB.
+     * First it checks for failure; all fields are checked for empty values.
+     * If any are empty, displays a message noting all fields are required.
+     * If all is good, assigns the info of each field to a variable, and then pass those variables to the customer INSERT method.
+     * Closes the scene window on completion.
+     */
     @FXML
     public void customerSave() throws SQLException, IOException {
         if (customerNameField.getText().isEmpty() ||
@@ -154,6 +172,11 @@ public class addCustomerController {
             addCustomer.close();
         }
     }
+
+    /**
+     * Set the combobox options to the respective observable lists.
+     * Changes the list of STATEs dependent on the Country selection.
+     */
     @FXML
     void initialize() {
         customerIDField.setDisable(true);
