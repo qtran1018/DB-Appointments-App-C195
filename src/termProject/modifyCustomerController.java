@@ -194,6 +194,7 @@ public class modifyCustomerController {
     /**
      * Set the combobox options to the respective observable lists.
      * Changes the list of STATEs dependent on the Country selection.
+     * Lambda expression: by using a lambda expression here inside the initialize method, we can simplify the reading of the basic switch-case statements, linked to a listener method on our combo box's selection.
      */
     @FXML
     void initialize() {

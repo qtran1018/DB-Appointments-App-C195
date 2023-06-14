@@ -73,10 +73,19 @@ public class addAppointmentController {
      * First checks for DISQUALIFYING information.
      * Checks if data fields are empty.
      * Then checks against business hours, if it is OUT of business hours, with a concatenation of date and time fields as parameters for the starting and ending date-times.
+     * Then checks the selected appointment times against that customer's existing appointments.
      * Lastly gets all field data and inserts into INSERT SQL statement after formatting dates and times.
      */
     @FXML
     public void appointmentSave() throws SQLException {
+
+        //TODO future: make time conversion methods, similar to AppointmentQuery.isOutOfHours()
+        //DATE formatter.
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        //From user's input of datetime to UTC.
+        String appointmentStart = LocalDateTime.parse(appointmentStartDate.getValue() + " " + appointmentStartTime.getValue() + ":00", formatter).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS).toString().replaceAll("[TZ]", " ").trim() + ":00";
+        String appointmentEnd = LocalDateTime.parse(appointmentEndDate.getValue() + " " + appointmentEndTime.getValue() + ":00", formatter).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS).toString().replaceAll("[TZ]", " ").trim() + ":00";
+
         if (appointmentTitleField.getText().isEmpty() ||
                 appointmentDescField.getText().isEmpty() ||
                 appointmentLocField.getText().isEmpty() ||
@@ -93,16 +102,21 @@ public class addAppointmentController {
             else {
                 showMessageDialog(null, "Erreur: Tous les champs sont obligatoires.");
             }
-        }
-        else if (AppointmentQuery.isOutOfHours(appointmentStartDate.getValue().toString() + " " + appointmentStartTime.getValue(), appointmentEndDate.getValue().toString() + " " + appointmentEndTime.getValue())) {
+        } else if (AppointmentQuery.isOutOfHours(appointmentStartDate.getValue().toString() + " " + appointmentStartTime.getValue(), appointmentEndDate.getValue().toString() + " " + appointmentEndTime.getValue())) {
             if (login_screen.isEnglish()) {
                 showMessageDialog(null, "Error: Outside business hours.");
             }
             else {
                 showMessageDialog(null, "Erreur: En dehors des heures d'ouverture.");
             }
-        }
-        else {
+        } else if (AppointmentQuery.timesOverlap(Integer.parseInt(appointmentCustomerID.getText()), appointmentStart, appointmentEnd)) {
+            if (login_screen.isEnglish()) {
+                showMessageDialog(null, "Error: appointment times for this customer overlap.");
+            }
+            else {
+                showMessageDialog(null, "Erreur: les heures de rendez-vous pour ce client se chevauchent.");
+            }
+        } else {
             String appointmentTitle = appointmentTitleField.getText();
             String appointmentDescription = appointmentDescField.getText();
             String appointmentLocation = appointmentLocField.getText();
@@ -113,13 +127,6 @@ public class addAppointmentController {
             int customerID = Integer.parseInt(appointmentCustomerID.getText());
             int userID = AppointmentQuery.selectUser();
             int contactID = AppointmentQuery.selectContactID(appointmentContact.getValue());
-
-            //TODO future: make time conversion methods, similar to AppointmentQuery.isOutOfHours()
-            //DATE formatter.
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            //From user's input of datetime to UTC.
-            String appointmentStart = LocalDateTime.parse(appointmentStartDate.getValue() + " " + appointmentStartTime.getValue() + ":00", formatter).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS).toString().replaceAll("[TZ]", " ").trim() + ":00";
-            String appointmentEnd = LocalDateTime.parse(appointmentEndDate.getValue() + " " + appointmentEndTime.getValue() + ":00", formatter).atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS).toString().replaceAll("[TZ]", " ").trim() + ":00";
 
             //Doubles up on create-date and update-date, created-by and updated-by, since they will be the same.
             AppointmentQuery.appointmentInsert(

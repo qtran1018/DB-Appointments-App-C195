@@ -229,6 +229,26 @@ public class AppointmentQuery {
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         return ps.executeQuery();
     }
+
+    /**
+     * Used to determine if a pair of datetime inputs (start and end) overlap with existing appointments.
+     * This DOES allow for appointments to start right when another ends, e.g 8AM - 9AM works with 9AM to 10AM
+     * @param customerID ID of the customer we're looking at appointments for
+     * @param startDatetime start datetime of input
+     * @param endDatetime end datetime of input
+     * @return returns true if there is an overlap, false if not
+     */
+    public static boolean timesOverlap(int customerID, String startDatetime, String endDatetime) throws SQLException {
+        String sql = "SELECT Appointment_ID FROM appointments WHERE Customer_ID = ? AND ? < END AND ? > START";
+        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+        ps.setInt(1, customerID);
+        ps.setString(2, startDatetime);
+        ps.setString(3, endDatetime);
+
+        ResultSet rs = ps.executeQuery();
+
+        return rs.isBeforeFirst();
+    }
 //-----------------------------------------------------------------------------------------------
 
     /**
