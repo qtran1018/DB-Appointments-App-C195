@@ -229,6 +229,11 @@ public class AppointmentQuery {
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         return ps.executeQuery();
     }
+    public static ResultSet getTypeList() throws SQLException {
+        String sql = "SELECT DISTINCT Type FROM appointments ORDER BY Type ASC";
+        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+        return ps.executeQuery();
+    }
 
     /**
      * Used to determine if a pair of datetime inputs (start and end) overlap with existing appointments.

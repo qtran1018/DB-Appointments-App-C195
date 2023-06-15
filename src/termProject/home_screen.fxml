@@ -86,7 +86,12 @@
             <Separator layoutX="17.0" layoutY="74.0" prefWidth="1032.0" />
             <Label fx:id="labelReportsByType" layoutX="20.0" layoutY="465.0" text="Appointments by Type" />
             <ComboBox fx:id="pickYear" layoutX="159.0" layoutY="125.0" prefHeight="25.0" prefWidth="70.0" />
-            <TableView fx:id="tableAppointmentByMonth" layoutX="14.0" layoutY="491.0" prefHeight="200.0" prefWidth="265.0" />
+            <TableView fx:id="tableAppointmentByMonth" layoutX="14.0" layoutY="491.0" prefHeight="200.0" prefWidth="396.0" />
+            <ComboBox fx:id="pickType" layoutX="159.0" layoutY="461.0" prefHeight="25.0" prefWidth="70.0" promptText="Type" />
+            <ComboBox fx:id="pickMonth" layoutX="239.0" layoutY="461.0" prefHeight="25.0" prefWidth="82.0" promptText="Month" />
+            <TableView fx:id="tableContactSchedules" layoutX="299.0" layoutY="132.0" prefHeight="296.0" prefWidth="750.0" />
+            <Label fx:id="labelContactSchedules" layoutX="299.0" layoutY="103.0" text="Contact Schedules" />
+            <Button fx:id="btnAppointmentLoad" layoutX="328.0" layoutY="461.0" mnemonicParsing="false" onAction="#getData" prefHeight="25.0" prefWidth="82.0" text="Load" />
             </AnchorPane>
         </SplitPane>
     </AnchorPane>

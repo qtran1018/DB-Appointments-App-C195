@@ -62,10 +62,19 @@ public class HomeController {
     public ComboBox<Integer> pickYear;
     public TableView tableAppointmentByMonth;
     public Label labelReportsByType;
+    public ComboBox<String> pickType;
+    public ComboBox<String> pickMonth;
+    public TableView tableContactSchedules;
+    public Label labelContactSchedules;
+    public Button btnAppointmentLoad;
     @FXML
     private Button btnHome;
     private ObservableList<Integer> years = FXCollections.observableArrayList();
+    private final ObservableList<String> months = FXCollections.observableArrayList("January", "February","March","April","May","June","July","August","September","October","November","December");
+    private ObservableList<String> appointmentType = FXCollections.observableArrayList();
+    public ObservableList<String> types = FXCollections.observableArrayList();
     private static final HashMap<String, Integer> monthNumbers = new HashMap<>();
+    private ResultSet typeRs;
 
     //</editor-fold
 
@@ -73,9 +82,11 @@ public class HomeController {
      * Executes a query for a ResulSet for appointments, grouped by month.
      * @return returns the ResultSet to be used by other functions.
      */
-    public static ResultSet getAppointmentByMonth() throws SQLException {
-        String sql = "SELECT MONTHNAME(Start) as Month, Type, COUNT(*) as Count FROM appointments GROUP BY Month, Type ORDER BY Month ASC";
+    public static ResultSet getAppointmentByMonth(String type, String month) throws SQLException {
+        String sql = "SELECT MONTHNAME(Start) as Month, Type, COUNT(*) as Count FROM appointments WHERE Type = ? AND MONTHNAME(Start) = ? GROUP BY Month, Type ORDER BY Type ASC";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+        ps.setString(1, type);
+        ps.setString(2, month);
         return ps.executeQuery();
     }
 
@@ -195,7 +206,7 @@ public class HomeController {
             data.clear();
             tableAppointmentByMonth.getItems().clear();
             tableAppointmentByMonth.getColumns().clear();
-            ResultSet rs = HomeController.getAppointmentByMonth();
+            ResultSet rs = HomeController.getAppointmentByMonth(pickType.getValue(),pickMonth.getValue());
 
             for (int i = 0; i < rs.getMetaData().getColumnCount(); i++){
                 final int j = i;
@@ -232,13 +243,22 @@ public class HomeController {
      * Call the functions and queries to load the data for appointments by month.
      */
     public void initialize() throws SQLException {
-        getData();
+        //Year Picker in monthly counts.
         pickYear.getItems().clear();
         for (int i = Year.now().getValue()-20; i<=Year.now().getValue()+20; i++){
             years.add(i);
         }
         pickYear.setItems(years);
         pickYear.setValue(Year.now().getValue());
+
+        pickMonth.setItems(months);
+
+        //Gets a ResultSet, iterates through, adds values to the Types list, then sets the list to the combo box.
+        typeRs = AppointmentQuery.getTypeList();
+        while(typeRs.next()){
+            types.add(typeRs.getString("Type"));
+        }
+        pickType.setItems(types);
 
         //Month-->Number HashMap insert
         if (monthNumbers.isEmpty()) {
@@ -292,6 +312,10 @@ public class HomeController {
             labelReports.setText("Rapports");
             labelReportsMonths.setText("Rendez-vous par mois");
             labelReportsByType.setText("Nominations par type");
+            pickMonth.setPromptText("Mois");
+            pickType.setPromptText("Taper");
+            btnAppointmentLoad.setText("Charger");
+            labelContactSchedules.setText("Horaires des contacts");
         }
 
         //On Home Page load, sets all values for appointment counts by month by current year.
