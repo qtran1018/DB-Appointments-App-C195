@@ -76,7 +76,7 @@ public class HomeController {
     private Button btnHome;
     private final ObservableList<Integer> years = FXCollections.observableArrayList();
     private final ObservableList<String> months = FXCollections.observableArrayList("January", "February","March","April","May","June","July","August","September","October","November","December");
-    private ObservableList<String> appointmentType = FXCollections.observableArrayList();
+    private final ObservableList<String> appointmentType = FXCollections.observableArrayList();
     public ObservableList<String> types = FXCollections.observableArrayList();
     private static final HashMap<String, Integer> monthNumbers = new HashMap<>();
     private final ObservableList<String> contacts = FXCollections.observableArrayList();
