@@ -67,6 +67,11 @@ public class HomeController {
     public TableView tableContactSchedules;
     public Label labelContactSchedules;
     public Button btnAppointmentLoad;
+    public ComboBox<String> pickContacts;
+    public Button btnContactsLoad;
+    public TableView tableStateLeaderboard;
+    public Label labelStateLeaderboard;
+    public Button btnStateLoad;
     @FXML
     private Button btnHome;
     private ObservableList<Integer> years = FXCollections.observableArrayList();
@@ -75,6 +80,8 @@ public class HomeController {
     public ObservableList<String> types = FXCollections.observableArrayList();
     private static final HashMap<String, Integer> monthNumbers = new HashMap<>();
     private ResultSet typeRs;
+    private ResultSet contactsRs;
+    private ObservableList<String> contacts = FXCollections.observableArrayList();
 
     //</editor-fold
 
@@ -166,6 +173,18 @@ public class HomeController {
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         return ps.executeQuery();
     }
+    public static ResultSet getContactSchedules(String contact) throws SQLException {
+        String sql = "SELECT Appointment_ID, Title, Type, Description, Start, End, Customer_ID FROM appointments AS a INNER JOIN contacts AS c ON a.Contact_ID = c.Contact_ID WHERE Contact_Name = ?";
+        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+        ps.setString(1,contact);
+        return ps.executeQuery();
+    }
+
+    public static ResultSet getStateCounts() throws SQLException {
+        String sql = "SELECT Division, COUNT(*) AS Count FROM customers AS c INNER JOIN first_level_divisions AS f ON c.Division_ID = f.Division_ID GROUP BY Division ORDER BY Count DESC";
+        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+        return ps.executeQuery();
+    }
 
     //TODO future: optimize somehow. 12 SQL queries for every change is probably not good. Maybe figure out how to get counts from 1 whole ResultSet and work from that instead.
 
@@ -199,6 +218,7 @@ public class HomeController {
      * Gets data for all appointments.
      * Dynamically creates the columns and fills them for appointments, based on the Result Set queried.
      * Receives the data and then puts it into the observable list, then setting the Tableview with that list.
+     * LAMBDA: the use of a lambda helps in that, in cases of collections like this, makes it easier to iterate through and work with to filter and extract data from the collection.
      */
     public void getData() {
         try {
@@ -213,6 +233,39 @@ public class HomeController {
                 TableColumn tblCol = new TableColumn(rs.getMetaData().getColumnName(i+1));
                 tblCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>) param -> new SimpleStringProperty(param.getValue().get(j).toString()));
                 tableAppointmentByMonth.getColumns().addAll(tblCol);
+            }
+            while(rs.next()){
+                ObservableList<String> row = FXCollections.observableArrayList();
+                for (int i=1; i <= rs.getMetaData().getColumnCount();i++){
+                    row.add(rs.getString(i));
+                }
+                data.add(row);
+            }
+            tableAppointmentByMonth.setItems(data);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            if (login_screen.isEnglish()){
+                showMessageDialog(null, "Error getting data.");
+            }
+            else {
+                showMessageDialog(null, "Erreur lors de l'obtention des données.");
+            }
+        }
+    }
+    public void getContactData() {
+        try {
+            ObservableList<ObservableList> data = FXCollections.observableArrayList();
+            data.clear();
+            tableContactSchedules.getItems().clear();
+            tableContactSchedules.getColumns().clear();
+            ResultSet rs = HomeController.getContactSchedules(pickContacts.getValue());
+
+            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++){
+                final int j = i;
+                TableColumn tblCol = new TableColumn(rs.getMetaData().getColumnName(i+1));
+                tblCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>) param -> new SimpleStringProperty(param.getValue().get(j).toString()));
+                tableContactSchedules.getColumns().addAll(tblCol);
                 //Let me see how many columns got pulled in.
                 //System.out.println("Column [" + i + "] ");
             }
@@ -223,7 +276,41 @@ public class HomeController {
                 }
                 data.add(row);
             }
-            tableAppointmentByMonth.setItems(data);
+            tableContactSchedules.setItems(data);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            if (login_screen.isEnglish()){
+                showMessageDialog(null, "Error getting data.");
+            }
+            else {
+                showMessageDialog(null, "Erreur lors de l'obtention des données.");
+            }
+        }
+    }
+
+    public void getStateData() {
+        try {
+            ObservableList<ObservableList> data = FXCollections.observableArrayList();
+            data.clear();
+            tableStateLeaderboard.getItems().clear();
+            tableStateLeaderboard.getColumns().clear();
+            ResultSet rs = HomeController.getStateCounts();
+
+            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++){
+                final int j = i;
+                TableColumn tblCol = new TableColumn(rs.getMetaData().getColumnName(i+1));
+                tblCol.setCellValueFactory((Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>) param -> new SimpleStringProperty(param.getValue().get(j).toString()));
+                tableStateLeaderboard.getColumns().addAll(tblCol);
+            }
+            while(rs.next()){
+                ObservableList<String> row = FXCollections.observableArrayList();
+                for (int i=1; i <= rs.getMetaData().getColumnCount();i++){
+                    row.add(rs.getString(i));
+                }
+                data.add(row);
+            }
+            tableStateLeaderboard.setItems(data);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -259,6 +346,13 @@ public class HomeController {
             types.add(typeRs.getString("Type"));
         }
         pickType.setItems(types);
+
+        //Contact-schedules contact picker
+        contactsRs = AppointmentQuery.getContactList();
+        while(contactsRs.next()) {
+            contacts.add(contactsRs.getString("Contact_Name"));
+        }
+        pickContacts.setItems(contacts);
 
         //Month-->Number HashMap insert
         if (monthNumbers.isEmpty()) {
@@ -316,6 +410,10 @@ public class HomeController {
             pickType.setPromptText("Taper");
             btnAppointmentLoad.setText("Charger");
             labelContactSchedules.setText("Horaires des contacts");
+            btnContactsLoad.setText("Charger");
+            //pickContacts.setPromptText("Contacts"); same in French
+            btnStateLoad.setText("Charger");
+            labelStateLeaderboard.setText("Clients par État Classement");
         }
 
         //On Home Page load, sets all values for appointment counts by month by current year.
