@@ -50,7 +50,7 @@ public class login_screen extends Application implements Initializable {
     private PasswordField password_field;
     Locale currentLocale = Locale.getDefault();
     String myCountry = currentLocale.getCountry();
-    String getLanguage = currentLocale.getLanguage();
+    String getLanguage = currentLocale.getDisplayLanguage();
     public static boolean languageIsEnglish = true;
     static String loggedUser;
     int appointmentID;

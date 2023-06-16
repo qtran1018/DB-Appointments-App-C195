@@ -74,14 +74,12 @@ public class HomeController {
     public Button btnStateLoad;
     @FXML
     private Button btnHome;
-    private ObservableList<Integer> years = FXCollections.observableArrayList();
+    private final ObservableList<Integer> years = FXCollections.observableArrayList();
     private final ObservableList<String> months = FXCollections.observableArrayList("January", "February","March","April","May","June","July","August","September","October","November","December");
     private ObservableList<String> appointmentType = FXCollections.observableArrayList();
     public ObservableList<String> types = FXCollections.observableArrayList();
     private static final HashMap<String, Integer> monthNumbers = new HashMap<>();
-    private ResultSet typeRs;
-    private ResultSet contactsRs;
-    private ObservableList<String> contacts = FXCollections.observableArrayList();
+    private final ObservableList<String> contacts = FXCollections.observableArrayList();
 
     //</editor-fold
 
@@ -341,14 +339,14 @@ public class HomeController {
         pickMonth.setItems(months);
 
         //Gets a ResultSet, iterates through, adds values to the Types list, then sets the list to the combo box.
-        typeRs = AppointmentQuery.getTypeList();
+        ResultSet typeRs = AppointmentQuery.getTypeList();
         while(typeRs.next()){
             types.add(typeRs.getString("Type"));
         }
         pickType.setItems(types);
 
         //Contact-schedules contact picker
-        contactsRs = AppointmentQuery.getContactList();
+        ResultSet contactsRs = AppointmentQuery.getContactList();
         while(contactsRs.next()) {
             contacts.add(contactsRs.getString("Contact_Name"));
         }
