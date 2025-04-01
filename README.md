@@ -35,7 +35,7 @@ INSTRUCTIONS:
 
 Login Screen
 
-	![Login screen](https://github.com/user-attachments/assets/a9ae6bdf-9bef-41fe-9adc-1b9f1852a0cd)
+![Login screen](https://github.com/user-attachments/assets/a9ae6bdf-9bef-41fe-9adc-1b9f1852a0cd)
 
 See upcoming appointments when logging in
 
