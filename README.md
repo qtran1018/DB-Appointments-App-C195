@@ -1,19 +1,25 @@
 NAME: DBClientApp
 
 PURPOSE: to interface with a database and provide a GUI for users to read and write data to and from it. This program allows the viewing, editing, adding, and deletion of customer records and appointments.
-AUTHOR: Quang Tran
+AUTHOR: 
+
+	Quang Tran
 
 	EMAIL: qtran16@wgu.edu
  
-VERSION: 2
+VERSION: 
 
-    DATE: 09 JUNE 2023
+	v.2
+
+	DATE: 09 JUNE 2023
     
-DEV TOOLS: IntelliJ IDEA 2023.1.1 (Ultimate Edition) Build #IU-231.8770.65
+DEV TOOLS: 
 
-			Java JDK 20 x64
+	IntelliJ IDEA 2023.1.1 (Ultimate Edition) Build #IU-231.8770.65
+			
+	Java JDK 20 x64
    
-			JavaFX-SDK-20.0.1
+	JavaFX-SDK-20.0.1
    
 DB Connector: MySQL-connector-j-8.0.33
 
@@ -29,7 +35,7 @@ INSTRUCTIONS:
 
 Login Screen
 
-![Login screen](https://github.com/user-attachments/assets/a9ae6bdf-9bef-41fe-9adc-1b9f1852a0cd)
+	![Login screen](https://github.com/user-attachments/assets/a9ae6bdf-9bef-41fe-9adc-1b9f1852a0cd)
 
 See upcoming appointments when logging in
 
